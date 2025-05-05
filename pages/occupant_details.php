@@ -24,7 +24,8 @@ $sql = "SELECT
     p.Location,
     t.Property_ID,
     l.Name AS LandlordName,
-    l.Landlord_ID
+    l.Landlord_ID,
+    t.Tenancy_ID as tenancy_id
     FROM occupants o
     LEFT JOIN MDA m ON m.MDA_ID = o.MDA_ID
     LEFT JOIN Tenancy t ON o.Occupant_ID = t.Occupant_ID
@@ -87,16 +88,16 @@ $stmt->close();
                     <div class="card-body">    
                     <dl class="row">
                             <dt class="col-sm-4">Occupant Name</dt>
-                            <dd class="col-sm-8"><?= htmlspecialchars($occupant['OccupantName']) ?></dd>
+                            <dd class="col-sm-8"><?= htmlspecialchars($occupant['OccupantName']?? '') ?></dd>
 
                             <dt class="col-sm-4">Contact</dt>
-                            <dd class="col-sm-8"><?= htmlspecialchars($occupant['Contact']) ?></dd>
+                            <dd class="col-sm-8"><?= htmlspecialchars($occupant['Contact']?? '') ?></dd>
 
                             <dt class="col-sm-4">Email</dt>
-                            <dd class="col-sm-8"><?= htmlspecialchars($occupant['Email']) ?></dd>
+                            <dd class="col-sm-8"><?= htmlspecialchars($occupant['Email']?? '') ?></dd>
 
                             <dt class="col-sm-4">MDA</dt>
-                            <dd class="col-sm-8"><?= htmlspecialchars($occupant['MDA_name']) ?></dd>
+                            <dd class="col-sm-8"><?= htmlspecialchars($occupant['MDA_name']?? '') ?></dd>
                         </dl>
                         </div>
 </div>
@@ -110,8 +111,13 @@ $stmt->close();
                     <div class="card-body">       
                     <dl class="row">
 
-                    <dt class="col-sm-4">Used For</dt>
-                    <dd class="col-sm-8"><?= htmlspecialchars($occupant['Used_for']) ?></dd>
+                    <dt class="col-sm-4">Tenancy ID</dt>
+                    <dd class="col-sm-8">
+                    <a href="index.php?page=tenancy_details&Tenancy_ID=<?= $occupant['tenancy_id'] ?>">
+                        <?= htmlspecialchars($occupant['tenancy_id']) ?>
+                   
+</a>
+                    </dd>
                             <dt class="col-sm-4">Used For</dt>
                             <dd class="col-sm-8"><?= htmlspecialchars($occupant['Used_for']) ?></dd>
 

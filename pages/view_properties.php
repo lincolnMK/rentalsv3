@@ -164,7 +164,7 @@ $total_pages = ceil($total_results / $limit);
                             
                             </td>
                             <td>
-                                <a href="occupant_details.php?occupant_id=<?= $property['Occupant_ID']; ?>">
+                                <a href="index.php?page=occupant_details&Occupant_ID=<?= $property['Occupant_ID']; ?>">
                                     <?= htmlspecialchars($property['Occupant']?? 'unkown'); ?>
                                 </a>
                             </td>
