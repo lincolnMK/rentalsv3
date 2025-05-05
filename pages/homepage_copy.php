@@ -1,8 +1,7 @@
 <?php
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Check if user is logged in
+include_once __DIR__ . '/../auth_check.php';
 
 // Query for total number of properties
 $paidquery1 = "SELECT COUNT(*) AS number_of_properties FROM property;";
