@@ -1,0 +1,18 @@
+.wrapper {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+.sidebar {
+  min-height: 100vh;
+}
+main {
+  padding: 20px;
+}
+
+.dropdown-arrow {
+  transition: transform 0.3s ease;
+}
+
+.dropdown-arrow-btn[aria-expanded="true"] .dropdown-arrow {
+  transform: rotate(90deg);
+}

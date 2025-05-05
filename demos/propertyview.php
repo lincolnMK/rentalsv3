@@ -1,0 +1,206 @@
+<?php
+session_start();
+include('db_connection.php');
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+// Fetch the username from the session (adjust this depending on how user data is stored)
+$username = $_SESSION['username'];  // Adjust as necessary
+
+// Database connection
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Query to count total number of properties
+$property_count_query = "SELECT COUNT(*) AS total_properties FROM PROPERTY";
+$stmt = $conn->prepare($property_count_query);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$total_properties = $row['total_properties'];
+
+$stmt->close();
+
+// Replace this with actual database query for pagination
+$properties = array(); // Fetch properties from database with LIMIT and OFFSET
+
+$limit = 20; // Number of entries to show in a page.
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$start = ($page - 1) * $limit;
+
+$sql = "SELECT 
+    Property_id AS 'Property ID',
+    SN_FILE AS 'SN File',
+    Plot_number AS 'Plot Number',
+    Landlord_id AS 'Landlord ID',
+    Region,
+    District,
+    Location,
+    Geo_ref_coordinates AS 'Geo Ref Coordinates',
+    Property_type_id AS 'Property Type ID',
+    RCA,
+    Date_of_occupation AS 'Date of Occupation',
+    Rent_first_occupation AS 'Rent First Occupation',
+    Area_m2 AS 'Area (m2)',
+    Description
+FROM PROPERTY
+LIMIT ?, ?";
+$stmt = $conn->prepare($sql);
+
+if ($stmt === false) {
+    die("Error preparing the SQL statement: " . $conn->error);
+}
+
+$stmt->bind_param("ii", $start, $limit);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $properties[] = $row;
+    }
+}
+
+$total_pages = ceil($total_properties / $limit);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Properties</title>
+
+    <!-- Load Bootstrap from CDN -->
+    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+    <!-- Top Bar -->
+    <div class="row bg-dark text-white py-2">
+        <div class="col-md-6">
+            <h4 class="ms-4">Logged in as: <?= htmlspecialchars($username); ?></h4>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="logout.php" class="btn btn-light me-4">Logout</a>
+        </div>
+    </div>
+
+    <!-- Sidebar and Main Content Wrapper -->
+    <div class="row">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="col-md-2 bg-light vh-100 d-md-block sidebar">
+            <div class="d-flex flex-column align-items-start py-3">
+                <img src="assets/images/logo.png" alt="System Logo" class="img-fluid mb-3" style="max-width: 100px;">
+                <h3 class="ms-3">Rental System</h3>
+                <ul class="nav flex-column w-100 mt-4">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="homepage.php">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="add_property.php">
+                            <i class="fas fa-home"></i> Add Property
+                        </a>
+                    </li>
+                    <!-- Add other nav items as needed -->
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="col-md-10 bg-light">
+            <!-- Button to toggle sidebar visibility -->
+            <button id="sidebarToggle" class="btn btn-dark d-md-none">☰</button>
+
+            <!-- Topbar (Inside Main Content) -->
+            <div class="row bg-white py-3 shadow-sm">
+                <div class="col">
+                    <h4 class="text-primary">Properties</h4>
+                </div>
+            </div>
+
+            <!-- Content Goes Here -->
+            <div class="row p-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Properties</h5>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Property ID</th>
+                                        <th>SN File</th>
+                                        <th>Plot Number</th>
+                                        <th>Landlord ID</th>
+                                        <th>Region</th>
+                                        <th>District</th>
+                                        <th>Location</th>
+                                        <th>Geo Ref Coordinates</th>
+                                        <th>Property Type ID</th>
+                                        <th>RCA</th>
+                                        <th>Date of Occupation</th>
+                                        <th>Rent First Occupation</th>
+                                        <th>Area (m2)</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($properties as $property): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($property['Property ID']); ?></td>
+                                            <td><?= htmlspecialchars($property['SN File']); ?></td>
+                                            <td><?= htmlspecialchars($property['Plot Number']); ?></td>
+                                            <td><?= htmlspecialchars($property['Landlord ID']); ?></td>
+                                            <td><?= htmlspecialchars($property['Region']); ?></td>
+                                            <td><?= htmlspecialchars($property['District']); ?></td>
+                                            <td><?= htmlspecialchars($property['Location']); ?></td>
+                                            <td><?= htmlspecialchars($property['Geo Ref Coordinates']); ?></td>
+                                            <td><?= htmlspecialchars($property['Property Type ID']); ?></td>
+                                            <td><?= htmlspecialchars($property['RCA']); ?></td>
+                                            <td><?= htmlspecialchars($property['Date of Occupation']); ?></td>
+                                            <td><?= htmlspecialchars($property['Rent First Occupation']); ?></td>
+                                            <td><?= htmlspecialchars($property['Area (m2)']); ?></td>
+                                            <td><?= htmlspecialchars($property['Description']); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+
+                            <!-- Pagination -->
+                            <nav>
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $page - 1 ?>">Previous</a>
+                                    </li>
+                                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                        <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                                            <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                    <li class="page-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $page + 1 ?>">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
