@@ -60,7 +60,7 @@ $sql = "SELECT
 
 // Add search condition if search is applied
 if (!empty($search)) {
-    $sql .= " AND (p.Plot_number LIKE ? OR o.Name LIKE ? OR p.District LIKE ? OR o.Occupant_ID LIKE ? OR o.Contact LIKE ? OR o.Email LIKE ? OR m.MDA_name LIKE ?)";
+    $sql .= " AND (p.Plot_number LIKE ? OR o.Name LIKE ? OR p.District LIKE ? OR o.Occupant_ID LIKE ? OR o.Contact LIKE ? OR o.email LIKE ? OR m.MDA_name LIKE ?)";
 }
 
 $sql .= " LIMIT ?, ?";

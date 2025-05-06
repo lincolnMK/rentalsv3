@@ -86,6 +86,11 @@ switch ($page) {
         $page_title = 'Occupant Details';
         $page_file = 'occupant_details.php';
         break;
+    
+    case 'edit_occupant':
+        $page_title = 'Edit Occupant';
+        $page_file = 'edit_occupant.php';
+        break;
 }
 ?>
 
