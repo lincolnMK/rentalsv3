@@ -1,6 +1,7 @@
 <?php
-// --- Connect to database ---
+// --- Connect to database and check authentication ---
 include_once __DIR__ . '/../auth_check.php';
+
 
 // --- Get property ID ---
 if (!isset($_GET['Property_ID'])) {
@@ -20,41 +21,56 @@ if (!$property) {
     die('Property not found.');
 }
 
+// --- Generate CSRF token ---
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// --- Fetch landlords list (for dropdown) ---
+$landlordsResult = $conn->query("SELECT Landlord_ID, Name FROM Landlord");
+$landlords = $landlordsResult ? $landlordsResult->fetch_all(MYSQLI_ASSOC) : [];
+
 // --- Handle form submission ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('Invalid CSRF token.');
+    }
+
     $plotNumber = $_POST['Plot_number'] ?? '';
     $district = $_POST['District'] ?? '';
     $location = $_POST['Location'] ?? '';
-    $area = $_POST['Area'] ?? '';
+    $area = (float) ($_POST['Area'] ?? 0);
     $description = $_POST['Description'] ?? '';
-    $landlordId = $_POST['Landlord_ID'] ?? null;
+    $landlordId = (int) ($_POST['Landlord_ID'] ?? 0);
 
     $updateSql = "
         UPDATE Property 
-        SET Plot_number = ?, District = ?, Location = ?, Area = ?, Description = ?
+        SET Plot_number = ?, District = ?, Location = ?, Area = ?, Description = ?, Landlord_ID = ?
         WHERE Property_ID = ?
     ";
 
     $updateStmt = $conn->prepare($updateSql);
     $updateStmt->bind_param(
-        "sssdsi", // types: s=string, d=double, i=integer
+        "sssdsii", // s=string, d=double, i=integer
         $plotNumber, 
         $district, 
         $location, 
         $area, 
         $description, 
+        $landlordId,
         $propertyId
     );
 
     if ($updateStmt->execute()) {
-        echo '<script type="text/javascript">
-            window.location.href = "index.php?page=property_details&Property_ID=' . $propertyId . '";
-        </script>';
+        echo "<script type='text/javascript'>
+            window.location.href = \"index.php?page=property_details&Property_ID=$propertyId\";
+        </script>";
         exit;
     } else {
         echo "<div class='alert alert-danger'>Failed to update property: " . htmlspecialchars($conn->error) . "</div>";
     }
-} // <<<--- this closing bracket was missing!
+    
+}
 ?>
 
 <div class="row bg-white py-3 shadow-sm">
@@ -92,6 +108,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <div class="card-body">
 
                                 <form method="post">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+
                                     <div class="mb-3 d-flex align-items-center">
                                         <label for="Plot_number" class="form-label me-3" style="min-width: 150px;">Plot Number</label>
                                         <input type="text" class="form-control w-auto" id="Plot_number" name="Plot_number" value="<?= htmlspecialchars($property['Plot_number'] ?? '') ?>" required>
@@ -113,6 +131,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <textarea class="form-control" id="Description" name="Description" rows="3" style="max-width:600px;"><?= htmlspecialchars($property['Description'] ?? '') ?></textarea>
                                     </div>
 
+                                    <div class="mb-3 d-flex align-items-center">
+                                        <label for="Landlord_ID" class="form-label me-3" style="min-width: 150px;">Landlord</label>
+                                        <select class="form-select w-auto" id="Landlord_ID" name="Landlord_ID">
+                                            <option value="0">-- Select Landlord --</option>
+                                            <?php foreach ($landlords as $landlord): ?>
+                                                <option value="<?= $landlord['Landlord_ID'] ?>" <?= $landlord['Landlord_ID'] == $property['Landlord_ID'] ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($landlord['Name']) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+
                                     <div class="d-flex justify-content-between">
                                         <button type="submit" class="btn btn-success">Save Changes</button>
                                         <a href="index.php?page=property_details&Property_ID=<?= $propertyId ?>" class="btn btn-secondary ms-2">Cancel</a>
@@ -127,9 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="tab-pane fade" id="landlord-details" role="tabpanel" aria-labelledby="landlord-details-tab">
                         <div class="card mb-4">
                             <div class="card-body">
-
-                            <p>Under development</p>
-
+                                <p>Under development</p>
                             </div>
                         </div>
                     </div>
