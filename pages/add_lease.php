@@ -1,20 +1,6 @@
 <?php
-session_start();
-include('db_connection.php');
-
 // Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-// Fetch the username from the session
-$username = $_SESSION['username'];
-
-// Database connection check
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include_once __DIR__ . '/../auth_check.php';
 
 // Handle form submission for Lease
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -80,54 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Lease</title>
-
-    <!-- Load Bootstrap from CDN -->
-    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-<div class="container-fluid">
-
-    <!-- Top Bar -->
-    <?php
-    include('assets/templates/topbar.php'); 
-?>
-
- <!-- Sidebar and Main Content Wrapper -->
- <div class="row">
-        <!-- Sidebar -->
-        <nav id="sidebar" class="col-md-2 bg-light vh-100 d-md-block sidebar">
-            <div class="d-flex flex-column align-items-start py-3">
-            <img src="assets/images/logo.png" alt="System Logo" class="img-fluid mb-3" style="max-width: 100px;">
-                <h3 class="ms-3">Rental System</h3>
-                <ul class="nav flex-column w-100 mt-4">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="homepage.php">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="view_leases.php">
-                            <i class="fas fa-building"></i> Manage Leases
-                        </a>
-                    </li>
-                    <!-- Add other nav items as needed -->
-                </ul>
-            </div>
-        </nav>
-
-        <!-- Main Content Area -->
-        <main class="col-md-10 bg-light">
-            <!-- Button to toggle sidebar visibility -->
-            <button id="sidebarToggle" class="btn btn-dark d-md-none">☰</button>
-
             <!-- Topbar (Inside Main Content) -->
             <div class="row bg-white py-3 shadow-sm">
                 <div class="col">
@@ -181,11 +119,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
-</div>
 
-</div>
-</body>
-<?php
-    include('assets/templates/footer.php'); 
-?>
-</html>

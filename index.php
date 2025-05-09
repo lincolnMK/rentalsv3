@@ -96,9 +96,25 @@ switch ($page) {
         $page_title = 'View Leases';
         $page_file = 'view_leases.php';
         break;
+
     case 'add_lease':
         $page_title = 'Add Lease';
         $page_file = 'add_lease.php';
+        break;
+    
+    case 'tenancy':
+        $page_title = 'View Tenancy';
+        $page_file = 'view_tenancy.php';
+        break;
+        
+    case 'tenancy_details':
+        $page_title = 'Tenancy Details';
+        $page_file = 'tenancy_details.php';
+        break;
+    
+    case 'add_tenancy':
+        $page_title = 'Add Tenancy';
+        $page_file = 'add_tenancy.php';
         break;
         
 }

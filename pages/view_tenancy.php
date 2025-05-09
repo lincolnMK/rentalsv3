@@ -1,20 +1,7 @@
 
 <?php
-session_start();
-include('db_connection.php');
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-$username = $_SESSION['username'];
-$profile_picture = $_SESSION['profile_picture'] ?? 'assets/images/default_avatar.png';
-
-// Database connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Check if user is logged in
+include_once __DIR__ . '/../auth_check.php';
 
 $search = $_GET['search'] ?? '';
 
@@ -45,8 +32,8 @@ $stmt->close();
 
 // Pagination Setup
 $limit = 50;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$start = ($page - 1) * $limit;
+$pages = isset($_GET['pages']) && is_numeric($_GET['pages']) && $_GET['pages'] > 0 ? (int)$_GET['pages'] : 1;
+$start = ($pages - 1) * $limit;
 
 // Query to fetch results with pagination
 $sql = "SELECT 
@@ -108,57 +95,6 @@ $total_pages = ceil($total_results / $limit);
 
 
 
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Tenancy</title>
-
-     <!-- Load Bootstrap from CDN -->
-     <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    
-</head>
-<body>
-<div class="container-fluid">
-   <!-- Top Bar -->
-<?php include('assets/templates/topbar.php'); ?>
-    <!-- Sidebar and Main Content Wrapper -->
-    <div class="row">
-        <!-- Sidebar -->
-        <nav id="sidebar" class="col-md-2 bg-light vh-100 d-md-block sidebar">
-            <div class="d-flex flex-column align-items-start py-3">
-            <img src="assets/images/logo.png" alt="System Logo" class="img-fluid mb-3" style="max-width: 100px;">
-                
-            <h3 class="ms-3">Rental System</h3>
-                <ul class="nav flex-column w-100 mt-4">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="homepage.php">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="add_tenancy.php">
-                            <i class="fas fa-money-bill-wave"></i>Create Tenancy
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="del_tenancy.php">
-                            <i class="fas fa-money-bill-wave"></i> Terminate Tenancy
-                        </a>
-                    </li>
-                    <!-- Add other nav items as needed -->
-                </ul>
-            </div>
-        </nav>
-
-
-                          <!-- Main Content Area -->
-        <main class="col-md-10 bg-light">
                         <!-- Topbar (Inside Main Content) -->
             <div class="row bg-white py-3 shadow-sm">
                 <div class="col">
@@ -170,14 +106,15 @@ $total_pages = ceil($total_results / $limit);
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Tenancies</h5>
+       
 
                                     <!-- Search Form -->
-                                    <form method="GET" action="" class="mb-3 d-flex align-items-center">
+                                    <form method="GET" action="index.php" class="mb-3 d-flex align-items-center">
     <div class="input-group me-3">
+        <input type="hidden" name="page" value="tenancy">
         <input type="text" name="search" class="form-control" placeholder="Search by Landlord, national idt, or phone" value="<?= htmlspecialchars($search) ?>">
         <button class="btn btn-primary" type="submit">Search</button>
-        <a href="view_occupants.php" class="btn btn-secondary">Clear</a>
+        <a href="index.php?page=tenancy" class="btn btn-secondary">Clear</a>
     </div>
 
     <div class="dropdown ms-3">
@@ -250,21 +187,21 @@ $total_pages = ceil($total_results / $limit);
                 <!-- Pagination -->
                 <nav>
     <ul class="pagination">
-        <?php if ($page > 1): ?>
+        <?php if ($pages > 1): ?>
             <li class="page-item">
-                <a class="page-link" href="?page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>">Previous</a>
+                <a class="page-link" href="index.php?page=tenancy&pages=<?= $pages - 1 ?>&search=<?= urlencode($search) ?>">Previous</a>
             </li>
         <?php endif; ?>
 
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
-                <a class="page-link" href="?page=<?= $i ?>&search=<?= urlencode($search) ?>"><?= $i ?></a>
+            <li class="page-item <?= ($i == $pages) ? 'active' : '' ?>">
+                <a class="page-link" href="index.php?page=tenancy&pages=<?= $i ?>&search=<?= urlencode($search) ?>"><?= $i ?></a>
             </li>
         <?php endfor; ?>
 
-        <?php if ($page < $total_pages): ?>
+        <?php if ($pages < $total_pages): ?>
             <li class="page-item">
-                <a class="page-link" href="?page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>">Next</a>
+                <a class="page-link" href="index.php?page=tenancy&pages=<?= $pages + 1 ?>&search=<?= urlencode($search) ?>">Next</a>
             </li>
         <?php endif; ?>
     </ul>
@@ -276,11 +213,4 @@ $total_pages = ceil($total_results / $limit);
     </div>
 </div>
 
-        </main>
-
-                </div>
-
-
-</body>
-<?php include('assets/templates/footer.php'); ?>
-</html>
+       

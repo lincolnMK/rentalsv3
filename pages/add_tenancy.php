@@ -1,17 +1,7 @@
 <?php
-session_start();
-include('db_connection.php');
+// Check if user is logged in
+include_once __DIR__ . '/../auth_check.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-$username = $_SESSION['username'];
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
