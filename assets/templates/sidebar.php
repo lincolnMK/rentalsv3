@@ -8,10 +8,21 @@
         <!-- Navigation Links -->
         <ul class="nav flex-column gap-2">
         <li class="nav-item">
-    <a class="nav-link active d-flex align-items-center gap-2" href="index.php?page=home">
+    <a class="nav-link <?php echo ($page == 'home') ? 'active' : ''; ?> d-flex align-items-center gap-2" href="index.php?page=home">
         <i class="fas fa-tachometer-alt"></i> Dashboard
     </a>
 </li>
+
+<?php
+$users_pages = ['users', 'view_users', 'add_user'];
+$property_pages = ['property', 'add_property'];
+$landlord_pages = ['view_landlords', 'add_landlord'];
+$occupant_pages = ['occupants', 'add_occupant'];
+$payments_pages = ['view_payments', 'add_payment'];
+$tenancy_pages = ['view_tenancy', 'add_tenancy'];
+$leases_pages = ['view_leases', 'add_lease'];
+$reports_pages = ['view_reports', 'export_reports'];
+?>
 
 <li class="nav-item">
     <div class="d-flex align-items-center justify-content-between">
@@ -21,133 +32,125 @@
         <button class="btn btn-sm dropdown-arrow-btn" type="button"
             data-bs-toggle="collapse" 
             data-bs-target="#usersDropdown" 
-            aria-expanded="false" 
+            aria-expanded="<?php echo in_array($page, $users_pages) ? 'true' : 'false'; ?>" 
             aria-controls="usersDropdown">
             <i class="fas fa-chevron-right dropdown-arrow"></i>
         </button>
     </div>
 
-    <ul class="collapse list-unstyled ps-4" id="usersDropdown">
-        <li><a class="nav-link" href="index.php?page=view_users">View Users</a></li>
-        <li><a class="nav-link" href="index.php?page=add_user">Add User</a></li>
+    <ul class="collapse <?php echo in_array($page, $users_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="usersDropdown">
+        <li><a class="nav-link <?php echo ($page == 'view_users') ? 'active' : ''; ?>" href="index.php?page=view_users">View Users</a></li>
+        <li><a class="nav-link <?php echo ($page == 'add_user') ? 'active' : ''; ?>" href="index.php?page=add_user">Add User</a></li>
     </ul>
 </li>
-
-
 
 <li class="nav-item">
   <div class="d-flex align-items-center justify-content-between">
     <a class="nav-link d-flex align-items-center gap-2" href="index.php?page=property">
       <i class="fas fa-home"></i> Property
     </a>
-    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#propertyDropdown" aria-expanded="false" aria-controls="propertyDropdown">
+    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#propertyDropdown" aria-expanded="<?php echo in_array($page, $property_pages) ? 'true' : 'false'; ?>" aria-controls="propertyDropdown">
       <i class="fas fa-chevron-right dropdown-arrow"></i>
     </button>
   </div>
-  <ul class="collapse list-unstyled ps-4" id="propertyDropdown">
-    <li><a class="nav-link" href="index.php?page=property">View Properties</a></li>
-    <li><a class="nav-link" href="index.php?page=add_property">Add Property</a></li>
+  <ul class="collapse <?php echo in_array($page, $property_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="propertyDropdown">
+    <li><a class="nav-link <?php echo ($page == 'property') ? 'active' : ''; ?>" href="index.php?page=property">View Properties</a></li>
+    <li><a class="nav-link <?php echo ($page == 'add_property') ? 'active' : ''; ?>" href="index.php?page=add_property">Add Property</a></li>
   </ul>
 </li>
 
-<!-- Landlords -->
 <li class="nav-item">
   <div class="d-flex align-items-center justify-content-between">
     <a class="nav-link d-flex align-items-center gap-2" href="index.php?page=view_landlords">
       <i class="fas fa-user-tie"></i> Landlords
     </a>
-    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#landlordDropdown" aria-expanded="false" aria-controls="landlordDropdown">
+    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#landlordDropdown" aria-expanded="<?php echo in_array($page, $landlord_pages) ? 'true' : 'false'; ?>" aria-controls="landlordDropdown">
       <i class="fas fa-chevron-right dropdown-arrow"></i>
     </button>
   </div>
-  <ul class="collapse list-unstyled ps-4" id="landlordDropdown">
-    <li><a class="nav-link" href="index.php?page=view_landlords">View Landlords</a></li>
-    <li><a class="nav-link" href="index.php?page=add_landlord">Add Landlord</a></li>
+  <ul class="collapse <?php echo in_array($page, $landlord_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="landlordDropdown">
+    <li><a class="nav-link <?php echo ($page == 'view_landlords') ? 'active' : ''; ?>" href="index.php?page=view_landlords">View Landlords</a></li>
+    <li><a class="nav-link <?php echo ($page == 'add_landlord') ? 'active' : ''; ?>" href="index.php?page=add_landlord">Add Landlord</a></li>
   </ul>
 </li>
 
-<!-- Payments -->
-<li class="nav-item">
-  <div class="d-flex align-items-center justify-content-between">
-    <a class="nav-link d-flex align-items-center gap-2" href="view_payments.php">
-      <i class="fas fa-money-check-alt"></i> Payments
-    </a>
-    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#paymentsDropdown" aria-expanded="false" aria-controls="paymentsDropdown">
-      <i class="fas fa-chevron-right dropdown-arrow"></i>
-    </button>
-  </div>
-  <ul class="collapse list-unstyled ps-4" id="paymentsDropdown">
-    <li><a class="nav-link" href="view_payments.php">View Payments</a></li>
-    <li><a class="nav-link" href="add_payment.php">Record Payment</a></li>
-  </ul>
-</li>
-
-<!-- Occupants -->
 <li class="nav-item">
   <div class="d-flex align-items-center justify-content-between">
     <a class="nav-link d-flex align-items-center gap-2" href="index.php?page=occupants">
       <i class="fas fa-user-friends"></i> Occupants
     </a>
-    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#occupantsDropdown" aria-expanded="false" aria-controls="occupantsDropdown">
+    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#occupantsDropdown" aria-expanded="<?php echo in_array($page, $occupant_pages) ? 'true' : 'false'; ?>" aria-controls="occupantsDropdown">
       <i class="fas fa-chevron-right dropdown-arrow"></i>
     </button>
   </div>
-  <ul class="collapse list-unstyled ps-4" id="occupantsDropdown">
-    <li><a class="nav-link" href="index.php?page=occupants">View Occupants</a></li>
-    <li><a class="nav-link" href="index.php?page=add_occupant">Add Occupant</a></li>
+  <ul class="collapse <?php echo in_array($page, $occupant_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="occupantsDropdown">
+    <li><a class="nav-link <?php echo ($page == 'occupants') ? 'active' : ''; ?>" href="index.php?page=occupants">View Occupants</a></li>
+    <li><a class="nav-link <?php echo ($page == 'add_occupant') ? 'active' : ''; ?>" href="index.php?page=add_occupant">Add Occupant</a></li>
   </ul>
 </li>
 
-<!-- Tenancy -->
+<li class="nav-item">
+  <div class="d-flex align-items-center justify-content-between">
+    <a class="nav-link d-flex align-items-center gap-2" href="view_payments.php">
+      <i class="fas fa-money-check-alt"></i> Payments
+    </a>
+    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#paymentsDropdown" aria-expanded="<?php echo in_array($page, $payments_pages) ? 'true' : 'false'; ?>" aria-controls="paymentsDropdown">
+      <i class="fas fa-chevron-right dropdown-arrow"></i>
+    </button>
+  </div>
+  <ul class="collapse <?php echo in_array($page, $payments_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="paymentsDropdown">
+    <li><a class="nav-link <?php echo ($page == 'view_payments') ? 'active' : ''; ?>" href="view_payments.php">View Payments</a></li>
+    <li><a class="nav-link <?php echo ($page == 'add_payment') ? 'active' : ''; ?>" href="add_payment.php">Record Payment</a></li>
+  </ul>
+</li>
+
 <li class="nav-item">
   <div class="d-flex align-items-center justify-content-between">
     <a class="nav-link d-flex align-items-center gap-2" href="view_tenancy.php">
       <i class="fas fa-file-signature"></i> Tenancy
     </a>
-    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#tenancyDropdown" aria-expanded="false" aria-controls="tenancyDropdown">
+    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#tenancyDropdown" aria-expanded="<?php echo in_array($page, $tenancy_pages) ? 'true' : 'false'; ?>" aria-controls="tenancyDropdown">
       <i class="fas fa-chevron-right dropdown-arrow"></i>
     </button>
   </div>
-  <ul class="collapse list-unstyled ps-4" id="tenancyDropdown">
-    <li><a class="nav-link" href="view_tenancy.php">View Tenancy</a></li>
-    <li><a class="nav-link" href="add_tenancy.php">Create Tenancy</a></li>
+  <ul class="collapse <?php echo in_array($page, $tenancy_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="tenancyDropdown">
+    <li><a class="nav-link <?php echo ($page == 'view_tenancy') ? 'active' : ''; ?>" href="view_tenancy.php">View Tenancy</a></li>
+    <li><a class="nav-link <?php echo ($page == 'add_tenancy') ? 'active' : ''; ?>" href="add_tenancy.php">Create Tenancy</a></li>
   </ul>
 </li>
 
-<!-- Leases -->
 <li class="nav-item">
   <div class="d-flex align-items-center justify-content-between">
     <a class="nav-link d-flex align-items-center gap-2" href="view_leases.php">
       <i class="fas fa-file-contract"></i> Leases
     </a>
-    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#leasesDropdown" aria-expanded="false" aria-controls="leasesDropdown">
+    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#leasesDropdown" aria-expanded="<?php echo in_array($page, $leases_pages) ? 'true' : 'false'; ?>" aria-controls="leasesDropdown">
       <i class="fas fa-chevron-right dropdown-arrow"></i>
     </button>
   </div>
-  <ul class="collapse list-unstyled ps-4" id="leasesDropdown">
-    <li><a class="nav-link" href="view_leases.php">View Leases</a></li>
-    <li><a class="nav-link" href="add_lease.php">Add Lease</a></li>
+  <ul class="collapse <?php echo in_array($page, $leases_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="leasesDropdown">
+    <li><a class="nav-link <?php echo ($page == 'view_leases') ? 'active' : ''; ?>" href="view_leases.php">View Leases</a></li>
+    <li><a class="nav-link <?php echo ($page == 'add_lease') ? 'active' : ''; ?>" href="add_lease.php">Add Lease</a></li>
   </ul>
 </li>
 
-<!-- Reports & Analytics -->
 <li class="nav-item">
   <div class="d-flex align-items-center justify-content-between">
     <a class="nav-link d-flex align-items-center gap-2" href="view_reports.php">
       <i class="fas fa-chart-bar"></i> Reports & Analytics
     </a>
-    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#reportsDropdown" aria-expanded="false" aria-controls="reportsDropdown">
+    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#reportsDropdown" aria-expanded="<?php echo in_array($page, $reports_pages) ? 'true' : 'false'; ?>" aria-controls="reportsDropdown">
       <i class="fas fa-chevron-right dropdown-arrow"></i>
     </button>
   </div>
-  <ul class="collapse list-unstyled ps-4" id="reportsDropdown">
-    <li><a class="nav-link" href="view_reports.php">View Reports</a></li>
-    <li><a class="nav-link" href="export_reports.php">Export Reports</a></li>
+  <ul class="collapse <?php echo in_array($page, $reports_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="reportsDropdown">
+    <li><a class="nav-link <?php echo ($page == 'view_reports') ? 'active' : ''; ?>" href="view_reports.php">View Reports</a></li>
+    <li><a class="nav-link <?php echo ($page == 'export_reports') ? 'active' : ''; ?>" href="export_reports.php">Export Reports</a></li>
   </ul>
 </li>
         </ul>
 
-        <script>
+<script>
   document.addEventListener('DOMContentLoaded', function () {
     const arrowButtons = document.querySelectorAll('.dropdown-arrow-btn');
 
@@ -156,13 +159,11 @@
       const targetCollapse = document.querySelector(targetId);
       const arrowIcon = button.querySelector('.dropdown-arrow');
 
-      // Initialize state on page load
       if (targetCollapse.classList.contains('show')) {
         button.setAttribute('aria-expanded', 'true');
         arrowIcon.classList.add('rotate');
       }
 
-      // Watch Bootstrap collapse events
       targetCollapse.addEventListener('show.bs.collapse', () => {
         button.setAttribute('aria-expanded', 'true');
       });
