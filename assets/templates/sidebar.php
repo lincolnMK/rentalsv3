@@ -20,7 +20,7 @@ $landlord_pages = ['view_landlords', 'add_landlord'];
 $occupant_pages = ['occupants', 'add_occupant'];
 $payments_pages = ['view_payments', 'add_payment'];
 $tenancy_pages = ['view_tenancy', 'add_tenancy'];
-$leases_pages = ['view_leases', 'add_lease'];
+$leases_pages = ['leases', 'add_lease'];
 $reports_pages = ['view_reports', 'export_reports'];
 ?>
 
@@ -121,7 +121,7 @@ $reports_pages = ['view_reports', 'export_reports'];
 
 <li class="nav-item">
   <div class="d-flex align-items-center justify-content-between">
-    <a class="nav-link d-flex align-items-center gap-2" href="view_leases.php">
+    <a class="nav-link d-flex align-items-center gap-2" href="index.php?page=leases">
       <i class="fas fa-file-contract"></i> Leases
     </a>
     <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#leasesDropdown" aria-expanded="<?php echo in_array($page, $leases_pages) ? 'true' : 'false'; ?>" aria-controls="leasesDropdown">
@@ -129,8 +129,8 @@ $reports_pages = ['view_reports', 'export_reports'];
     </button>
   </div>
   <ul class="collapse <?php echo in_array($page, $leases_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="leasesDropdown">
-    <li><a class="nav-link <?php echo ($page == 'view_leases') ? 'active' : ''; ?>" href="view_leases.php">View Leases</a></li>
-    <li><a class="nav-link <?php echo ($page == 'add_lease') ? 'active' : ''; ?>" href="add_lease.php">Add Lease</a></li>
+    <li><a class="nav-link <?php echo ($page == 'leases') ? 'active' : ''; ?>" href="index.php?page=leases">View Leases</a></li>
+    <li><a class="nav-link <?php echo ($page == 'add_lease') ? 'active' : ''; ?>" href="index.php?page=add_lease">Add Lease</a></li>
   </ul>
 </li>
 

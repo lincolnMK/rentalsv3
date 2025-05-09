@@ -91,6 +91,16 @@ switch ($page) {
         $page_title = 'Edit Occupant';
         $page_file = 'edit_occupant.php';
         break;
+
+    case 'leases':
+        $page_title = 'View Leases';
+        $page_file = 'view_leases.php';
+        break;
+    case 'add_lease':
+        $page_title = 'Add Lease';
+        $page_file = 'add_lease.php';
+        break;
+        
 }
 ?>
 
