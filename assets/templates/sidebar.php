@@ -18,7 +18,7 @@ $users_pages = ['users', 'view_users', 'add_user'];
 $property_pages = ['property', 'add_property'];
 $landlord_pages = ['view_landlords', 'add_landlord'];
 $occupant_pages = ['occupants', 'add_occupant'];
-$payments_pages = ['view_payments', 'add_payment'];
+$payments_pages = ['payments', 'add_payment'];
 $tenancy_pages = ['tenancy', 'add_tenancy'];
 $leases_pages = ['leases', 'add_lease'];
 $reports_pages = ['reports', 'export_reports'];
@@ -91,7 +91,7 @@ $reports_pages = ['reports', 'export_reports'];
 
 <li class="nav-item">
   <div class="d-flex align-items-center justify-content-between">
-    <a class="nav-link d-flex align-items-center gap-2" href="view_payments.php">
+    <a class="nav-link d-flex align-items-center gap-2" href="index.php?page=payments">
       <i class="fas fa-money-check-alt"></i> Payments
     </a>
     <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#paymentsDropdown" aria-expanded="<?php echo in_array($page, $payments_pages) ? 'true' : 'false'; ?>" aria-controls="paymentsDropdown">
@@ -99,8 +99,8 @@ $reports_pages = ['reports', 'export_reports'];
     </button>
   </div>
   <ul class="collapse <?php echo in_array($page, $payments_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="paymentsDropdown">
-    <li><a class="nav-link <?php echo ($page == 'view_payments') ? 'active' : ''; ?>" href="view_payments.php">View Payments</a></li>
-    <li><a class="nav-link <?php echo ($page == 'add_payment') ? 'active' : ''; ?>" href="add_payment.php">Record Payment</a></li>
+    <li><a class="nav-link <?php echo ($page == 'payments') ? 'active' : ''; ?>" href="index.php?page=payments">View Payments</a></li>
+    <li><a class="nav-link <?php echo ($page == 'add_payment') ? 'active' : ''; ?>" href="index.php?page=add_payment">Record Payment</a></li>
   </ul>
 </li>
 

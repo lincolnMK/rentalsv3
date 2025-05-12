@@ -1,24 +1,5 @@
 <?php 
-session_start();
-include('db_connection.php');
-
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-// Fetch the username from the session (adjust this depending on how user data is stored)
-$username = $_SESSION['username'];  // Adjust as necessary
-$profile_picture = $_SESSION['profile_picture'] ?? 'assets/images/default_avatar.png';
-
-
-// Database connection
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
+include_once __DIR__ . '/../auth_check.php';
 //pagenation code start 
 
 
@@ -34,83 +15,7 @@ if ($conn->connect_error) {
 
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Payments</title>
-
-     <!-- Load Bootstrap from CDN -->
-     <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    
-</head>
-<body class="container-fluid">
-
-   <!-- Top Bar -->
-<div class="row bg-dark text-white py-2">
-    <div class="col-md-6">
-        <!-- Optional: Place your content here (e.g., logo, title, etc.) -->
-    </div>
-    <div class="col-md-6 text-end">
-        <!-- User Dropdown -->
-        <div class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="d-none d-lg-inline text-gray-600 small"><?= htmlspecialchars($username); ?></span>
-                <?php
-                    // Assuming $profile_picture contains the path to the uploaded image
-                    if (!empty($profile_picture)) {
-                        // If the user has uploaded a profile picture, display it
-                        echo '<img class="img-profile rounded-circle img-fluid" src="' . htmlspecialchars($profile_picture) . '" alt=" " style="width: 30px; height: 30px;">';
-                    } else {
-                        // If no profile picture, display a default image
-                        echo '<img class="img-profile rounded-circle img-fluid" src="assets/images/default-avatar.png" alt="Default Profile" style="width: 30px; height: 30px;">';
-                    }
-                ?>
-            </a>
-            <!-- Dropdown - User Information -->
-            <ul class="dropdown-menu dropdown-menu-end shadow animated--grow-in" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="#"><i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>Settings</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>Activity Log</a></li>
-                <div class="dropdown-divider"></div>
-                <li><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>Logout</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-    <!-- Sidebar and Main Content Wrapper -->
-    <div class="row">
-        <!-- Sidebar -->
-        <nav id="sidebar" class="col-md-2 bg-light vh-100 d-md-block sidebar">
-            <div class="d-flex flex-column align-items-start py-3">
-            <img src="assets/images/logo.png" alt="System Logo" class="img-fluid mb-3" style="max-width: 100px;">
-                
-            <h3 class="ms-3">Rental System</h3>
-                <ul class="nav flex-column w-100 mt-4">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="homepage.php">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="add_payment.php">
-                            <i class="fas fa-money-bill-wave"></i> Add Payment
-                        </a>
-                    </li>
-                    <!-- Add other nav items as needed -->
-                </ul>
-            </div>
-        </nav>
-
-
-
-        <main class="col-md-10 bg-light">
-
-                       <!-- Button to toggle sidebar visibility -->
-            <button id="sidebarToggle" class="btn btn-dark d-md-none">☰</button>
+ 
 
                 <!-- Topbar (Inside Main Content) -->
                 <div class="row bg-white py-3 shadow-sm">
@@ -401,6 +306,3 @@ if ($conn->connect_error) {
 </script>
 
 
-
-</body>
-</html>
