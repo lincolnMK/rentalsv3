@@ -86,6 +86,11 @@ switch ($page) {
         $page_title = 'Occupant Details';
         $page_file = 'occupant_details.php';
         break;
+        
+    case 'add_occupant':
+        $page_title = 'Add Occupant';
+        $page_file = 'add_occupant.php';
+        break;
     
     case 'edit_occupant':
         $page_title = 'Edit Occupant';
@@ -115,6 +120,11 @@ switch ($page) {
     case 'add_tenancy':
         $page_title = 'Add Tenancy';
         $page_file = 'add_tenancy.php';
+        break;
+    
+    case 'reports':
+        $page_title = 'Reports';
+        $page_file = 'view_reports.php';
         break;
         
 }
