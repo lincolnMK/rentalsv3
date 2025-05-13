@@ -137,6 +137,21 @@ switch ($page) {
         $page_file = 'add_payment.php';
         break;
     
+    case 'capture_payment':
+        $page_title = 'Capture payment';
+        $page_file = 'step3.php';
+        break;
+
+    case 'submit_payment':
+        $page_title = 'Submit payment';
+        $page_file = 'submit_payment.php';
+        break;
+
+    case 'payment_success':
+        $page_title = 'payment Success';
+        $page_file = 'payment_success.php';
+        break;
+            
 }
 ?>
 
