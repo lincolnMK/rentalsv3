@@ -145,7 +145,7 @@ $reports_pages = ['reports', 'export_reports'];
   </div>
   <ul class="collapse <?php echo in_array($page, $reports_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="reportsDropdown">
     <li><a class="nav-link <?php echo ($page == 'reports') ? 'active' : ''; ?>" href="index.php?page=reports">View Reports</a></li>
-    <li><a class="nav-link <?php echo ($page == 'export_reports') ? 'active' : ''; ?>" href="export_reports.php">Export Reports</a></li>
+   
   </ul>
 </li>
         </ul>

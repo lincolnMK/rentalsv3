@@ -109,53 +109,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Tenancy</title>
-    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-<div class="container-fluid">
-    <!-- Top Bar -->
-   <?php
-   include('assets/templates/topbar.php'); 
-   ?>
-    
-<!-- Sidebar and Main Content Wrapper -->
-<div class="row">
-<!-- Sidebar -->
-  <nav id="sidebar" class="col-md-2 bg-light vh-100 d-md-block sidebar">
-            <div class="d-flex flex-column align-items-start py-3">
-            <img src="assets/images/logo.png" alt="System Logo" class="img-fluid mb-3" style="max-width: 100px;">
-                <h3 class="ms-3">Rental System</h3>
-                <ul class="nav flex-column w-100 mt-4">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="homepage.php">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="view_tenancy.php">
-                            <i class="fas fa-building"></i> Manage Tenancies
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="del_tenancy.php">
-                            <i class="fas fa-money-bill-wave"></i> Terminate Tenancy
-                        </a>
-                    </li>
-                    <!-- Add other nav items as needed -->
-                </ul>
-            </div>
-        </nav>
-
-        <!-- Main Content Area -->
-        <main class="col-md-10 bg-light">
             <!-- Button to toggle sidebar visibility -->
             <button id="sidebarToggle" class="btn btn-dark d-md-none">☰</button>
 
@@ -223,8 +176,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </div>
 </div>
-</body>
-<?php
-   include('assets/templates/footer.php'); 
-   ?>
-</html>
