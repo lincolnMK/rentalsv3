@@ -12,6 +12,10 @@ $result = $conn->query("SELECT * FROM login_audit ORDER BY login_time DESC");
                 </div>
 
 <div class="row p-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                
     <div class="table-responsive">
         <table class="table table-striped table-bordered table-hover align-middle">
             <thead class="table-dark">
@@ -47,6 +51,11 @@ $result = $conn->query("SELECT * FROM login_audit ORDER BY login_time DESC");
         </table>
     </div>
 </div>
+                    </div>
+                </div>  
+            </div>
+        
+
 
 
 
