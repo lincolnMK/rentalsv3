@@ -151,7 +151,10 @@ switch ($page) {
         $page_title = 'payment Success';
         $page_file = 'payment_success.php';
         break;
-            
+    case 'login_log':
+        $page_title = 'Login Audit Log';
+        $page_file = 'audit_log.php';
+        break;    
 }
 ?>
 

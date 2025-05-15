@@ -14,7 +14,7 @@
 </li>
 
 <?php
-$users_pages = ['users', 'view_users', 'add_user'];
+$users_pages = ['users', 'view_users', 'add_user', 'login_log'];
 $property_pages = ['property', 'add_property'];
 $landlord_pages = ['view_landlords', 'add_landlord'];
 $occupant_pages = ['occupants', 'add_occupant'];
@@ -41,6 +41,7 @@ $reports_pages = ['reports', 'export_reports'];
     <ul class="collapse <?php echo in_array($page, $users_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="usersDropdown">
         <li><a class="nav-link <?php echo ($page == 'view_users') ? 'active' : ''; ?>" href="index.php?page=view_users">View Users</a></li>
         <li><a class="nav-link <?php echo ($page == 'add_user') ? 'active' : ''; ?>" href="index.php?page=add_user">Add User</a></li>
+        <li><a class="nav-link <?php echo ($page == 'login_log') ? 'active' : ''; ?>" href="index.php?page=login_log">Login Audit Log</a></li>
     </ul>
 </li>
 

@@ -5,6 +5,17 @@
 
 session_start();
 
+
+function log_login_attempt($conn, $username, $status) {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $agent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
+
+    $stmt = $conn->prepare("INSERT INTO login_audit (username, status, ip_address, user_agent) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $username, $status, $ip, $agent);
+    $stmt->execute();
+    $stmt->close();
+}
+
 if (isset($_SESSION['user_id'])) {
     header("Location: index.php?page=home");
     exit;
@@ -25,27 +36,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
-        if (password_verify($password, $user['Password'])) {
-            $_SESSION['user_id'] = $user['User_ID'];
-            $_SESSION['user_role_id'] = $user['User_role_ID'];
-            $_SESSION['user_type_id'] = $user['User_type_ID'];
-            $_SESSION['username'] = $user['Username'];
-            $_SESSION['profile_picture'] = $user['Profile_picture'];
+if ($result->num_rows === 1) {
+    $user = $result->fetch_assoc();
+    if (password_verify($password, $user['Password'])) {
+        $_SESSION['user_id'] = $user['User_ID'];
+        $_SESSION['user_role_id'] = $user['User_role_ID'];
+        $_SESSION['user_type_id'] = $user['User_type_ID'];
+        $_SESSION['username'] = $user['Username'];
+        $_SESSION['profile_picture'] = $user['Profile_picture'];
 
-            header("Location: index.php?page=home");
-            exit;
-        } else {
-            $error = "Invalid credentials!";
-        }
+        log_login_attempt($conn, $username, 'success'); // ✅ Log successful login
+        header("Location: index.php?page=home");
+        exit;
     } else {
-        $error = "User not found!";
+        log_login_attempt($conn, $username, 'failure'); // ❌ Wrong password
+        $error = "Invalid credentials!";
     }
-
-    $stmt->close();
+} else {
+    log_login_attempt($conn, $username, 'failure'); // ❌ Username not found
+    $error = "User not found!";
 }
-
+}
 $conn->close();
 
 ?>
