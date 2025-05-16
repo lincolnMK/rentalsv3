@@ -1,18 +1,35 @@
 <?php
+
+
 include_once __DIR__ . '/../auth_check.php';
 
-$user_id = isset($_GET['User_id']) ? (int)$_GET['User_id'] : 1;
-$id= $user_id;
-// --- Show success message ---
+
+// Check for success flag in the query string
 if (isset($_GET['updated']) && $_GET['updated'] == 1) {
     echo "<div class='alert alert-success'>User details updated successfully!</div>";
 }
 
-// --- Fetch user details securely ---
-$stmt = $conn->prepare("SELECT * FROM users WHERE user_id = ?");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$user_result = $stmt->get_result();
+
+
+
+// --- Get the user ID ---
+$id = $_GET['User_id'] ?? 1;
+$id = (int)$id; // Always cast to int for safety
+$user_id = $id;
+
+
+
+
+
+
+
+
+
+
+
+// --- Fetch user details ---
+$user_sql = "SELECT * FROM users WHERE user_id = $id";
+$user_result = $conn->query($user_sql);
 $user = $user_result->fetch_assoc();
 
 if (!$user) {
@@ -20,17 +37,32 @@ if (!$user) {
     exit;
 }
 
-// --- Fetch modules ---
+// --- Fetch user permissions ---
+$permissions_sql = "SELECT * FROM permissions WHERE User_Id = $id";
+$permissions_result = $conn->query($permissions_sql);
+
+$permissions = [];
+while ($row = $permissions_result->fetch_assoc()) {
+    $permissions[$row['module_name']] = $row;
+}
+
 $modules_result = mysqli_query($conn, "SELECT * FROM modules");
 
-// --- Fetch user permissions ---
+// Fetch existing permissions
 $permissions_result = mysqli_query($conn, "SELECT * FROM permissions WHERE user_id = $user_id");
+
 $permissions = [];
 while ($row = mysqli_fetch_assoc($permissions_result)) {
-    $permissions[$row['module_id']] = $row;
+    $permissions[$row['module_ID']] = $row;
 }
-?>
 
+
+
+
+
+
+
+?>
 
 <div class="row bg-white py-3 shadow-sm">
     <div class="col">
@@ -83,25 +115,20 @@ while ($row = mysqli_fetch_assoc($permissions_result)) {
 
         <!-- Permissions Tab -->
         <div class="tab-pane fade" id="permissions" role="tabpanel" aria-labelledby="permissions-tab">
-  <div class="card mb-4">
-    <div class="card-body">
-      <?php
-      $query = "
-        SELECT 
-            u.User_ID, u.Username, m.Module_Name, 
-            p.can_view, p.can_add, p.can_edit, p.can_delete
-        FROM permissions p
-        JOIN users u ON p.user_id = u.User_ID
-        JOIN modules m ON p.module_id = m.Module_ID
-        WHERE u.User_ID = $id
-        ORDER BY m.Module_Name
-      ";
+            <h4>Access Permissions</h4>
+            <div class="table-responsive">
+               
 
-      $result = mysqli_query($conn, $query);
-      ?>
+<div class="container mt-4">
+  <form method="post" action="index.php?page=save_permissions">
+    <input type="hidden" name="user_id" value="<?= $user_id ?>">
 
-      <div class="table-responsive">
-        <?php if (mysqli_num_rows($result) > 0): ?>
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">User Module Permissions</h5>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
           <table class="table table-bordered table-hover mb-0">
             <thead class="table-light">
               <tr>
@@ -113,28 +140,43 @@ while ($row = mysqli_fetch_assoc($permissions_result)) {
               </tr>
             </thead>
             <tbody>
-              <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                <tr>
-                  <td><?= htmlspecialchars($row['Module_Name']) ?></td>
-                  <td class="text-center"><?= $row['can_view'] ? '✔️' : '❌' ?></td>
-                  <td class="text-center"><?= $row['can_add'] ? '✔️' : '❌' ?></td>
-                  <td class="text-center"><?= $row['can_edit'] ? '✔️' : '❌' ?></td>
-                  <td class="text-center"><?= $row['can_delete'] ? '✔️' : '❌' ?></td>
-                </tr>
+              <?php while ($module = mysqli_fetch_assoc($modules_result)): 
+                $perm = $permissions[$module['Module_ID']] ?? ['can_view'=>0, 'can_add'=>0, 'can_edit'=>0, 'can_delete'=>0];
+              ?>
+              <tr>
+                <td><?= htmlspecialchars($module['Module_Name']) ?></td>
+                <?php foreach (['can_view', 'can_add', 'can_edit', 'can_delete'] as $action): ?>
+                  <td class="text-center">
+                    <div class="form-check">
+                      <input class="form-check-input"
+                             type="checkbox"
+                             name="permissions[<?= $module['Module_ID'] ?>][<?= $action ?>]"
+                             value="1"
+                             <?= $perm[$action] ? 'checked' : '' ?>>
+                    </div>
+                  </td>
+                <?php endforeach; ?>
+              </tr>
               <?php endwhile; ?>
             </tbody>
           </table>
-        <?php else: ?>
-          <div class="alert alert-warning m-3">
-            No permissions set for this user.
-          </div>
-        <?php endif; ?>
+        </div>
+      </div>
+      <div class="card-footer text-end">
+        <button type="submit" class="btn btn-success">Save Permissions</button>
       </div>
     </div>
-  </div>
-
-  <a href="index.php?page=edit_user&User_id=<?= $id ?>" class="btn btn-primary">Modify Permissions</a>
+  </form>
 </div>
+
+
+
+
+
+
+            </div>
+        </div>
+    </div>
 
                         </div>
  </div>

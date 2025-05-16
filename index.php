@@ -1,9 +1,33 @@
 <?php
 
+include_once 'auth_check.php';
 
+if (!isset($_SESSION['permissions'])) {
+    $_SESSION['permissions'] = [];
+
+    $stmt = $conn->prepare("
+        SELECT m.Module_Name, p.can_view, p.can_add, p.can_edit, p.can_delete
+        FROM permissions p
+        JOIN modules m ON p.module_id = m.Module_ID
+        WHERE p.user_id = ?
+    ");
+    $stmt->bind_param("i", $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    while ($row = $result->fetch_assoc()) {
+        $_SESSION['permissions'][$row['Module_Name']] = [
+            'can_view' => (int)$row['can_view'],
+            'can_add' => (int)$row['can_add'],
+            'can_edit' => (int)$row['can_edit'],
+            'can_delete' => (int)$row['can_delete'],
+        ];
+    }
+}
 
 // Get page from URL, default to 'home'
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
+
 
 // Determine the correct content file and title
 switch ($page) {
@@ -154,8 +178,67 @@ switch ($page) {
     case 'login_log':
         $page_title = 'Login Audit Log';
         $page_file = 'audit_log.php';
-        break;    
+        break;  
+
+    case 'save_permissions':
+        $page_title = 'Save Permissions';
+        $page_file = 'save_permissions.php';
+        break;
+
+    case 'edit_permissions':
+        $page_title = 'Edit Permissions';
+        $page_file = 'edit_permissions.php';
+        break;
+    
 }
+
+
+// Below your switch() statement
+$page_permissions = [
+    'users'            => ['module' => 'Users', 'action' => 'can_view'],
+    'view_users'       => ['module' => 'Users', 'action' => 'can_view'],
+    'add_user'         => ['module' => 'Users', 'action' => 'can_add'],
+    'edit_user'        => ['module' => 'Users', 'action' => 'can_edit'],
+    'user_details'     => ['module' => 'Users', 'action' => 'can_view'],
+
+    'property'         => ['module' => 'Properties', 'action' => 'can_view'],
+    'add_property'     => ['module' => 'Properties', 'action' => 'can_add'],
+    'edit_property'    => ['module' => 'Properties', 'action' => 'can_edit'],
+    'property_details' => ['module' => 'Properties', 'action' => 'can_view'],
+
+    'view_landlords'   => ['module' => 'Landlords', 'action' => 'can_view'],
+    'add_landlord'     => ['module' => 'Landlords', 'action' => 'can_add'],
+    'edit_landlord'    => ['module' => 'Landlords', 'action' => 'can_edit'],
+    'landlord_details' => ['module' => 'Landlords', 'action' => 'can_view'],
+
+    'occupants'        => ['module' => 'Occupants', 'action' => 'can_view'],
+    'add_occupant'     => ['module' => 'Occupants', 'action' => 'can_add'],
+    'edit_occupant'    => ['module' => 'Occupants', 'action' => 'can_edit'],
+    'occupant_details' => ['module' => 'Occupants', 'action' => 'can_view'],
+
+    'leases'           => ['module' => 'Leases', 'action' => 'can_view'],
+    'add_lease'        => ['module' => 'Leases', 'action' => 'can_add'],
+
+    'tenancy'          => ['module' => 'Tenancy', 'action' => 'can_view'],
+    'add_tenancy'      => ['module' => 'Tenancy', 'action' => 'can_add'],
+    'tenancy_details'  => ['module' => 'Tenancy', 'action' => 'can_view'],
+
+    'payments'         => ['module' => 'Payments', 'action' => 'can_view'],
+    'add_payment'      => ['module' => 'Payments', 'action' => 'can_add'],
+    'capture_payment'  => ['module' => 'Payments', 'action' => 'can_add'],
+    'submit_payment'   => ['module' => 'Payments', 'action' => 'can_add'],
+    'payment_success'  => ['module' => 'Payments', 'action' => 'can_add'],
+
+    'reports'          => ['module' => 'Reports', 'action' => 'can_view'],
+
+    'login_log'        => ['module' => 'Audit Log', 'action' => 'can_view'],
+
+    'save_permissions' => ['module' => 'Permissions', 'action' => 'can_edit'],
+    'edit_permissions' => ['module' => 'Permissions', 'action' => 'can_edit'],
+];
+
+
+
 ?>
 
 <?php include('assets/templates/header.php'); ?>
@@ -166,12 +249,31 @@ switch ($page) {
 
         <main id="mainContent" class="col px-3">
             <?php 
-                $path = "pages/$page_file";
-                if (file_exists($path)) {
-                    include($path); 
-                } else {
-                    echo "<p class='text-danger'>Page not found.</p>";
-                }
+               $path = "pages/$page_file";
+if (file_exists($path)) {
+    // Check permission
+    if (isset($page_permissions[$page])) {
+        $required = $page_permissions[$page];
+       if (!has_permission($required['module'], $required['action'])) {
+    echo "<div class='alert alert-danger'>You do not have permission to access this page.</div>";
+    include('assets/templates/footer.php');
+    exit;
+
+    if (!isset($page_permissions[$page])) {
+    echo "<div class='alert alert-danger'>Access not allowed.</div>";
+    include('assets/templates/footer.php');
+    exit;
+}
+
+}
+
+    }
+
+    include($path); 
+} else {
+    echo "<p class='text-danger'>Page not found.</p>";
+}
+
             ?>
         </main>
     </div>
