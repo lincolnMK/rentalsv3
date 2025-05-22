@@ -32,8 +32,11 @@ $stmt->close();
 
 // Pagination Setup
 $limit = 50;
-$page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
-$start = ($page - 1) * $limit;
+$pages = isset($_GET['pages']) && is_numeric($_GET['pages']) && $_GET['pages'] > 0 ? (int)$_GET['pages'] : 1;
+$start = ($pages - 1) * $limit;
+if ($start < 0) {
+    $start = 0;
+}
 
 // Query to fetch results with pagination
 $sql = "SELECT 
@@ -101,9 +104,9 @@ $total_pages = ceil($total_results / $limit);
 
                                     <!-- Search Form -->
                                     <form method="GET" action="index.php" class="mb-3 d-flex align-items-center">
-    <input type="hidden" name="page" value="property">
 
     <div class="input-group me-3">
+        <input type="hidden" name="page" value="property">
         <input 
             type="text" 
             name="search" 
@@ -181,23 +184,23 @@ $total_pages = ceil($total_results / $limit);
                 </table>
 
                 <!-- Pagination -->
-                <nav>
+                 <nav>
     <ul class="pagination">
-        <?php if ($page > 1): ?>
+        <?php if ($pages > 1): ?>
             <li class="page-item">
-                <a class="page-link" href="?page=<?= $page - 1 ?>&search=<?= urlencode($search) ?>">Previous</a>
+                <a class="page-link" href="index.php?page=property&pages=<?= $pages - 1 ?>&search=<?= urlencode($search) ?>">Previous</a>
             </li>
         <?php endif; ?>
 
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
-                <a class="page-link" href="?page=<?= $i ?>&search=<?= urlencode($search) ?>"><?= $i ?></a>
+            <li class="page-item <?= ($i == $pages) ? 'active' : '' ?>">
+                <a class="page-link" href="index.php?page=property&pages=<?= $i ?>&search=<?= urlencode($search) ?>"><?= $i ?></a>
             </li>
         <?php endfor; ?>
 
-        <?php if ($page < $total_pages): ?>
+        <?php if ($pages < $total_pages): ?>
             <li class="page-item">
-                <a class="page-link" href="?page=<?= $page + 1 ?>&search=<?= urlencode($search) ?>">Next</a>
+                <a class="page-link" href="index.php?page=property&pages=<?= $pages + 1 ?>&search=<?= urlencode($search) ?>">Next</a>
             </li>
         <?php endif; ?>
     </ul>

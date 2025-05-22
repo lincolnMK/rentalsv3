@@ -89,12 +89,14 @@ $total_pages = ceil($total_results / $limit);
                         
                     </div>
                 </div>
-
-                <div class="row mt-4">
-                    <div class="col-12">
+  <div class="row p-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                       
                        
                        <!-- Search Form -->
-                                    <form method="GET" action="index.php" class="mb-3 d-flex align-items-center">
+     <form method="GET" action="index.php" class="mb-3 d-flex align-items-center">
     <div class="input-group me-3">
         <input type="hidden" name="page" value="payments">
         <input type="text" name="search" class="form-control" placeholder="Search by Landlord, occupant, or plot number" value="<?= htmlspecialchars($search) ?>">
@@ -113,9 +115,12 @@ $total_pages = ceil($total_results / $limit);
     </div>
 </form>
 
+<p class="text-muted">
+    Showing <strong><?= $total_results; ?></strong> Payments in this list
 
+</p>
 
-                        <div class="table-responsive">
+                        
                             <table class="table table-bordered table-hover">
                                 <thead class="thead-light">
                                     <tr>
@@ -156,29 +161,34 @@ $total_pages = ceil($total_results / $limit);
                                     <?php endif; ?>
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                </div>
+                        
                 
                 <!-- Pagination -->
                   <nav>
     <ul class="pagination">
         <?php if ($pages > 1): ?>
             <li class="page-item">
-                <a class="page-link" href="index.php?page=tenancy&pages=<?= $pages - 1 ?>&search=<?= urlencode($search) ?>">Previous</a>
+                <a class="page-link" href="index.php?page=payments&pages=<?= $pages - 1 ?>&search=<?= urlencode($search) ?>">Previous</a>
             </li>
         <?php endif; ?>
 
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
             <li class="page-item <?= ($i == $pages) ? 'active' : '' ?>">
-                <a class="page-link" href="index.php?page=tenancy&pages=<?= $i ?>&search=<?= urlencode($search) ?>"><?= $i ?></a>
+                <a class="page-link" href="index.php?page=payments&pages=<?= $i ?>&search=<?= urlencode($search) ?>"><?= $i ?></a>
             </li>
         <?php endfor; ?>
 
         <?php if ($pages < $total_pages): ?>
             <li class="page-item">
-                <a class="page-link" href="index.php?page=tenancy&pages=<?= $pages + 1 ?>&search=<?= urlencode($search) ?>">Next</a>
+                <a class="page-link" href="index.php?page=payments&pages=<?= $pages + 1 ?>&search=<?= urlencode($search) ?>">Next</a>
             </li>
         <?php endif; ?>
     </ul>
 </nav>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+    

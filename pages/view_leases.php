@@ -29,16 +29,12 @@ $total_leases = $row['total_leases'];
 $stmt->close();
 
 // Pagination Setup
-
-$limit = 50; // Number of entries to show per page
-$page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
-
-
-$start = ($page - 1) * $limit;
-
-// Ensure that $start and $limit are integers
-$start = (int) $start;
-$limit = (int) $limit;
+$limit = 50;
+$pages = isset($_GET['pages']) && is_numeric($_GET['pages']) && $_GET['pages'] > 0 ? (int)$_GET['pages'] : 1;
+$start = ($pages - 1) * $limit;
+if ($start < 0) {
+    $start = 0;
+}
 
 // Query to fetch results with pagination
 $sql = "SELECT 
@@ -170,20 +166,28 @@ if (empty($leases)) {
 
                             <!-- Pagination -->
                             <nav>
-                                <ul class="pagination justify-content-center">
-                                    <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $page - 1 ?>">Previous</a>
-                                    </li>
-                                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                                        <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
-                                            <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-                                        </li>
-                                    <?php endfor; ?>
-                                    <li class="page-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
-                                        <a class="page-link" href="?page=<?= $page + 1 ?>">Next</a>
-                                    </li>
-                                </ul>
-                            </nav>
+    <ul class="pagination">
+        <?php if ($pages > 1): ?>
+            <li class="page-item">
+                <a class="page-link" href="index.php?page=leases&pages=<?= $pages - 1 ?>&search=<?= urlencode($search) ?>">Previous</a>
+            </li>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <li class="page-item <?= ($i == $pages) ? 'active' : '' ?>">
+                <a class="page-link" href="index.php?page=leases&pages=<?= $i ?>&search=<?= urlencode($search) ?>"><?= $i ?></a>
+            </li>
+        <?php endfor; ?>
+
+        <?php if ($pages < $total_pages): ?>
+            <li class="page-item">
+                <a class="page-link" href="index.php?page=leases&pages=<?= $pages + 1 ?>&search=<?= urlencode($search) ?>">Next</a>
+            </li>
+        <?php endif; ?>
+    </ul>
+</nav>
+
+
                         </div>
                     </div>
                 </div>
