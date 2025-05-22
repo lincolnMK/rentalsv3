@@ -34,7 +34,9 @@ $stmt->close();
 $limit = 50;
 $pages = isset($_GET['pages']) && is_numeric($_GET['pages']) && $_GET['pages'] > 0 ? (int)$_GET['pages'] : 1;
 $start = ($pages - 1) * $limit;
-
+if ($start < 0) {
+    $start = 0;
+}
 // Query to fetch results with pagination
 $sql = "SELECT 
     t.tenancy_ID,
