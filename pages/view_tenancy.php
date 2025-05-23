@@ -159,7 +159,10 @@ $total_pages = ceil($total_results / $limit);
         <?php if (count($tenancies) > 0): ?>
             <?php foreach ($tenancies as $row): ?>
                 <tr>
-                <td><?= htmlspecialchars($row['tenancy_ID']) ?></td>
+                <td> <a href="index.php?page=tenancy_details&Tenancy_ID=<?= $row['tenancy_ID'] ?>" class="text-decoration-none">
+                    <?= htmlspecialchars($row['tenancy_ID']) ?>
+                    </a>
+                </td>
                 <td><?= htmlspecialchars($row['Name']) ?></td>
                 <td><?= htmlspecialchars($row['used_for']?? '') ?></td>
                
