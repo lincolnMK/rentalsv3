@@ -189,7 +189,32 @@ switch ($page) {
         $page_title = 'Edit Permissions';
         $page_file = 'edit_permissions.php';
         break;
+
+    case 'maintenance':
+        $page_title = 'maintenance';
+        $page_file = 'view_maintenance.php';
+        break;
+    case 'maintenance_details':
+        $page_title = 'maintenance Details';
+        $page_file = 'maintenance_details.php';
+        break;
+
+    case 'add_maintenance':
+        $page_title = 'Add Maintenance';
+        $page_file = 'add_maintenance.php';
+        break;
+
+    case 'edit_maintenance':
+        $page_title = 'Edit maintenance';
+        $page_file = 'edit_maintenance.php';
+        break;
+
+    case 'view_maintenance':
+        $page_title = 'View maintenance';
+        $page_file = 'view_maintenance.php';
+        break;
     
+
 }
 
 
@@ -235,6 +260,13 @@ $page_permissions = [
 
     'save_permissions' => ['module' => 'Permissions', 'action' => 'can_edit'],
     'edit_permissions' => ['module' => 'Permissions', 'action' => 'can_edit'],
+
+    'maintenance'       => ['module' => 'Maintenance', 'action' => 'can_view'],
+    'maintenance_details' => ['module' => 'Maintenance', 'action' => 'can_view'],
+    'add_maintenance' => ['module' => 'Maintenance', 'action' => 'can_add'],
+    'edit_maintenance' => ['module' => 'Maintenance', 'action' => 'can_edit'],
+    'view_maintenance' => ['module' => 'Maintenance', 'action' => 'can_view'],
+
 ];
 
 

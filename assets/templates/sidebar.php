@@ -1,5 +1,17 @@
 <!-- Sidebar -->
 
+<?php
+$users_pages = ['users', 'view_users', 'add_user', 'login_log'];
+$property_pages = ['property', 'add_property'];
+$landlord_pages = ['view_landlords', 'add_landlord'];
+$occupant_pages = ['occupants', 'add_occupant'];
+$payments_pages = ['payments', 'add_payment'];
+$tenancy_pages = ['tenancy', 'add_tenancy'];
+$leases_pages = ['leases', 'add_lease'];
+$reports_pages = ['reports', 'export_reports'];
+$maintenance_pages = ['maintenance', 'add_maintenance', 'view_maintenance', 'edit_maintenance', 'maintenance_details'];
+?>
+
 <nav id="sidebar" class="col-auto col-md-2 bg-light vh-100 border-end d-flex flex-column px-2 px-md-3" style="min-width: 100px">
     <div class="d-flex flex-column py-4 px-3 ">
         <!-- System Name -->
@@ -13,16 +25,6 @@
     </a>
 </li>
 
-<?php
-$users_pages = ['users', 'view_users', 'add_user', 'login_log'];
-$property_pages = ['property', 'add_property'];
-$landlord_pages = ['view_landlords', 'add_landlord'];
-$occupant_pages = ['occupants', 'add_occupant'];
-$payments_pages = ['payments', 'add_payment'];
-$tenancy_pages = ['tenancy', 'add_tenancy'];
-$leases_pages = ['leases', 'add_lease'];
-$reports_pages = ['reports', 'export_reports'];
-?>
 
 <li class="nav-item">
     <div class="d-flex align-items-center justify-content-between">
@@ -133,6 +135,21 @@ $reports_pages = ['reports', 'export_reports'];
     <li><a class="nav-link <?php echo ($page == 'leases') ? 'active' : ''; ?>" href="index.php?page=leases">View Leases</a></li>
     <li><a class="nav-link <?php echo ($page == 'add_lease') ? 'active' : ''; ?>" href="index.php?page=add_lease">Add Lease</a></li>
   </ul>
+</li>
+
+<li class="nav-item">
+  <div class="d-flex align-items-center justify-content-between">
+    <a class="nav-link d-flex align-items-center gap-2" href="index.php?page=maintenance">
+      <i class="fas fa-tools"></i> Maintenance 
+    </a>
+    <button class="btn btn-sm dropdown-arrow-btn" data-bs-toggle="collapse" data-bs-target="#maintenanceDropdown" aria-expanded="<?php echo in_array($page, $maintenance_pages) ? 'true' : 'false'; ?>" aria-controls="maintenanceDropdown">
+      <i class="fas fa-chevron-right dropdown-arrow"></i>
+    </button>
+  </div>
+  <ul class="collapse <?php echo in_array($page, $maintenance_pages) ? 'show' : ''; ?> list-unstyled ps-4" id="maintenanceDropdown">
+    <li><a class="nav-link <?php echo ($page == 'view_maintenance') ? 'active' : ''; ?>" href="index.php?page=view_maintenance">View Requests</a></li>
+    <li><a class="nav-link <?php echo ($page == 'add_maintenance') ? 'active' : ''; ?>" href="index.php?page=add_maintenance">Add Request</a></li>
+    </ul>
 </li>
 
 <li class="nav-item">
