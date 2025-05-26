@@ -191,3 +191,4 @@ $total_pages = ceil($total_results / $limit);
     function exportToPDF() {
         window.location.href = 'export_pdf.php?search=' + encodeURIComponent('<?= $search ?>');
     }
+</script>
