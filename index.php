@@ -213,6 +213,11 @@ switch ($page) {
         $page_title = 'View maintenance';
         $page_file = 'view_maintenance.php';
         break;
+
+    case 'change_pass':
+        $page_title = 'Change Password';
+        $page_file = 'change_pass.php';
+        break;
     
 
 }
@@ -225,6 +230,7 @@ $page_permissions = [
     'add_user'         => ['module' => 'Users', 'action' => 'can_add'],
     'edit_user'        => ['module' => 'Users', 'action' => 'can_edit'],
     'user_details'     => ['module' => 'Users', 'action' => 'can_view'],
+    'change_pass'      => ['module' => 'Users', 'action' => 'can_edit'],
 
     'property'         => ['module' => 'Properties', 'action' => 'can_view'],
     'add_property'     => ['module' => 'Properties', 'action' => 'can_add'],

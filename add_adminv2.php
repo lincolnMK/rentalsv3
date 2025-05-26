@@ -2,7 +2,7 @@
 include('db_connection.php'); // Ensure this file contains your database connection ($conn)
 
 // Admin credentials
-$username = 'klmkumbwa';
+$username = 'klmkumbwa1';
 $password = password_hash('admin', PASSWORD_DEFAULT); // Securely hash the password
 $first_name = 'Admin';
 $last_name = 'User';

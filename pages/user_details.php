@@ -1,11 +1,29 @@
 <?php
 include_once __DIR__ . '/../auth_check.php';
 
-$user_id = isset($_GET['User_id']) ? (int)$_GET['User_id'] : 1;
-$id= $user_id;
+
+
+if (isset($_GET['User_id']) && ctype_digit($_GET['User_id']) && (int)$_GET['User_id'] > 0) {
+    $user_id = (int)$_GET['User_id'];
+    $id= $user_id;
+}
+
+if (!isset($id)) {
+    $id = $_POST['user_id'] ?? null;
+    if (!$id) {
+        echo "<div class='alert alert-danger'>Invalid user ID.</div>";
+        exit;
+    }
+}
 // --- Show success message ---
 if (isset($_GET['updated']) && $_GET['updated'] == 1) {
     echo "<div class='alert alert-success'>User details updated successfully!</div>";
+    
+}
+
+if (isset($_GET['password_changed']) && $_GET['password_changed'] == 1) {
+    echo "<div class='alert alert-success'>Password updated successfully.</div>";
+    $changePassword = false;
 }
 
 // --- Fetch user details securely ---
@@ -29,6 +47,14 @@ $permissions = [];
 while ($row = mysqli_fetch_assoc($permissions_result)) {
     $permissions[$row['module_id']] = $row;
 }
+
+// Determine whether password fields should be enabled
+$changePassword = isset($_GET['change_password']) && $_GET['change_password'] == '1';
+$activeTab = isset($_GET['change_password']) ? 'security' : 'user-details';
+
+
+
+
 ?>
 
 
@@ -46,19 +72,50 @@ while ($row = mysqli_fetch_assoc($permissions_result)) {
 <h5 class="card-title">User: <?= htmlspecialchars($user['First_name'] . ' ' . $user['Last_name']) ?></h5>
 
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs" id="userTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="user-details-tab" data-bs-toggle="tab" href="#user-details" role="tab" aria-controls="user-details" aria-selected="true">General</a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" id="permissions-tab" data-bs-toggle="tab" href="#permissions" role="tab" aria-controls="permissions" aria-selected="false">Authorizations</a>
-        </li>
-    </ul>
+  <ul class="nav nav-tabs" id="userTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <a class="nav-link <?= $activeTab === 'user-details' ? 'active' : '' ?>" 
+           id="user-details-tab" 
+           data-bs-toggle="tab" 
+           href="#user-details" 
+           role="tab" 
+           aria-controls="user-details" 
+           aria-selected="<?= $activeTab === 'user-details' ? 'true' : 'false' ?>">
+           General
+        </a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link <?= $activeTab === 'permissions' ? 'active' : '' ?>" 
+           id="permissions-tab" 
+           data-bs-toggle="tab" 
+           href="#permissions" 
+           role="tab" 
+           aria-controls="permissions" 
+           aria-selected="<?= $activeTab === 'permissions' ? 'true' : 'false' ?>">
+           Authorizations
+        </a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link <?= $activeTab === 'security' ? 'active' : '' ?>" 
+           id="security-tab" 
+           data-bs-toggle="tab" 
+           href="#security" 
+           role="tab" 
+           aria-controls="security" 
+           aria-selected="<?= $activeTab === 'security' ? 'true' : 'false' ?>">
+           Security
+        </a>
+    </li>
+</ul>
 
     <!-- Tab content -->
     <div class="tab-content mt-3">
         <!-- User Details Tab -->
-        <div class="tab-pane fade show active" id="user-details" role="tabpanel" aria-labelledby="user-details-tab">
+        <div class="tab-pane fade <?= $activeTab === 'user-details' ? 'show active' : '' ?>" 
+             id="user-details" 
+             role="tabpanel" 
+             aria-labelledby="user-details-tab">
+
             <!-- User Details Card -->
             <div class="card mb-4">
                 <div class="card-body">
@@ -78,11 +135,15 @@ while ($row = mysqli_fetch_assoc($permissions_result)) {
                 </div>
             </div>
             <a href="index.php?page=edit_user&User_id=<?= $id ?>" class="btn btn-primary">Edit User Details</a>
-                    <a href=" " class="btn btn-primary">reset password</a>
+                   
         </div>
 
         <!-- Permissions Tab -->
-        <div class="tab-pane fade" id="permissions" role="tabpanel" aria-labelledby="permissions-tab">
+        <div class="tab-pane fade <?= $activeTab === 'permissions' ? 'show active' : '' ?>" 
+         id="permissions" 
+         role="tabpanel" 
+         aria-labelledby="permissions-tab">
+
   <div class="card mb-4">
     <div class="card-body">
       <?php
@@ -136,7 +197,65 @@ while ($row = mysqli_fetch_assoc($permissions_result)) {
   <a href="index.php?page=edit_user&User_id=<?= $id ?>" class="btn btn-primary">Modify Permissions</a>
 </div>
 
-                        </div>
- </div>
- </div>
- </div>
+
+        <!-- Security Tab -->
+ <div class="tab-pane fade <?= $activeTab === 'security' ? 'show active' : '' ?>" 
+         id="security" 
+         role="tabpanel" 
+         aria-labelledby="security-tab">
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h4 class="mb-3">Security Settings</h4>
+
+      <!-- Toggle button -->
+      <a href="?page=user_details&User_id=<?= $id ?><?= $changePassword ? '' : '&change_password=1' ?>" 
+   class="btn btn-outline-secondary mb-3">
+   <?= $changePassword ? 'Cancel Password Change' : 'Change Password' ?>
+</a>
+
+
+      <!-- Security form -->
+      <form method="post" action="index.php?page=change_pass<?= $changePassword ? '&change_password=1' : '' ?>">
+        <input type="hidden" name="user_id" value="<?= $id ?>">
+
+        <div class="mb-3">
+          <label for="new_password" class="form-label">New Password</label>
+          <input 
+            type="password" 
+            class="form-control" 
+            id="new_password" 
+            name="new_password" 
+            placeholder="Enter new password" 
+            <?= $changePassword ? '' : 'disabled' ?>
+          > 
+
+          <input 
+            type="password" 
+            class="form-control mt-2" 
+            id="confirm_password" 
+            name="confirm_password" 
+            placeholder="Confirm new password" 
+            <?= $changePassword ? '' : 'disabled' ?>
+          >
+
+          <small class="form-text text-muted">Leave blank if you don't want to change the password.</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+        </div> <!-- tab-content -->
+    </div> <!-- card-body -->
+</div> <!-- card -->
+</div> <!-- col -->
+</div> <!-- row -->
+
+
