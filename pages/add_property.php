@@ -17,19 +17,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $description = $_POST['description'];
 
   
-    echo "<pre>";
-    print_r($_POST);
-    echo "</pre>";
+   
     
     // Insert property
     $stmt = $conn->prepare("INSERT INTO property (sn_file, plot_number, landlord_id, district, location, geo_ref_coordinates, property_type_id, rca, area, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("ssisssssss", $sn_file, $plot_number, $landlord_id, $district, $location, $geo_ref_coordinates, $property_type_id, $rca, $area, $description);
     
-    if ($stmt->execute()) {
-        echo "New property added successfully.";
-    } else {
-        echo "Error: " . $stmt->error;
-    }
+if ($stmt->execute()) {
+    $last_id = $conn->insert_id;
+    echo "<div style='padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin: 10px 0;'>
+            New property added successfully. Redirecting...
+          </div>";
+    echo "<script>
+            setTimeout(function() {
+                window.location.href = 'index.php?page=property_details&Property_ID={$last_id}';
+            }, 1500); // Redirect after 2 seconds
+          </script>";
+    exit();
+} else {
+    echo "<div style='padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; margin: 10px 0;'>
+            Error: " . htmlspecialchars($stmt->error) . "
+          </div>";
+}
+
     $stmt->close();
 }
 
@@ -49,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="card-body">
                             <h5 class="card-title">Property Information</h5>
                             <div class="container" style="max-width: 600px;">
-  <form action="add_property.php" method="post">
+  <form action="index.php?page=add_property" method="post">
     <div class="row">
       <div class="col-md-6 mb-2">
         <label for="sn_file" class="form-label">SN File</label>
@@ -134,7 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </nav>
             </div>
             <div class="modal-footer">
-                <a href="add_landlord.php" class="btn btn-primary">Create New Landlord</a>
+                <a href="index.php?page=add_landlord" class="btn btn-primary">Create New Landlord</a>
             </div>
         </div>
     </div>

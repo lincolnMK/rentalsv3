@@ -1,17 +1,11 @@
 <?php
 // Start session if not already started
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 include_once 'config.php';       // Defines BASE_URL
 include_once 'db_connection.php'; // Database connection
 
 // Redirect to login if not authenticated
-if (!isset($_SESSION['user_id'])) {
-    header("Location: " . BASE_URL . "/login.php");
-    exit;
-}
 
 $user_id = $_SESSION['user_id'];
 

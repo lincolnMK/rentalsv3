@@ -156,21 +156,26 @@ $total_pages = ceil($total_results / $limit);
                         <?php foreach ($properties as $property): ?>
                             <tr>
                                 <td>
-                                    <a href="index.php?page=property_details&Property_ID=<?= $property['Property_ID']; ?>">
-                                        <?= htmlspecialchars($property['Property_ID']?? ''); ?>
-                                    </a>
+                                        <a href="index.php?page=property_details&Property_ID=<?= $property['Property_ID']; ?>">
+                                            <?= htmlspecialchars($property['Property_ID']?? ''); ?>
+                                        </a>
                                 </td>
                                 <td>
-                                <a href="index.php?page=landlord_details&Landlord_ID=<?= $property['Landlord_ID']; ?>">
-                                <?= htmlspecialchars($property['Name'] ?? 'Unknown'); ?>
-                                </a>
+                                        <a href="index.php?page=landlord_details&Landlord_ID=<?= $property['Landlord_ID']; ?>">
+                                        <?= htmlspecialchars($property['Name'] ?? 'Unknown'); ?>
+                                        </a>
                             
-                            </td>
-                            <td>
-                                <a href="index.php?page=occupant_details&Occupant_ID=<?= $property['Occupant_ID']; ?>">
-                                    <?= htmlspecialchars($property['Occupant']?? 'unkown'); ?>
-                                </a>
-                            </td>
+                                </td>
+                                 <td>
+                                        <?php if (!empty($property['Occupant_ID'])): ?>
+                                            <a href="index.php?page=occupant_details&Occupant_ID=<?= $property['Occupant_ID']; ?>">
+                                                <?= htmlspecialchars($property['Occupant']); ?>
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="text-muted">Vacant</span>
+                                        <?php endif; ?>
+                                </td>
+
                                 <td><?= htmlspecialchars($property['Used_for']?? ''); ?></td>
                                 <td><?= htmlspecialchars($property['Plot_number']?? ''); ?></td>
                                 <td><?= htmlspecialchars($property['District']?? ''); ?></td>

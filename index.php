@@ -1,5 +1,7 @@
 <?php
 
+include('session_check.php'); 
+
 include_once 'auth_check.php';
 
 if (!isset($_SESSION['permissions'])) {
