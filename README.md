@@ -33,3 +33,8 @@ Adding a module
 4. add the module in the module db table  : INSERT INTO module (module_name) VALUES ('modulename');
 5. create yours pages + php logic and place them in /pages
 
+before launching
+1. populate the db with a list of modules 
+2. populate the db with a list of property types
+3. config db connection
+4. config the rate
