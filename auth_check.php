@@ -1,7 +1,6 @@
 <?php
 // auth_check.php
-
-include_once 'config.php';
+//include_once 'config.php';
 include_once 'db_connection.php';
 
 // Redirect to login if not logged in
