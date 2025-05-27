@@ -29,10 +29,8 @@ if ($stmt->execute()) {
             New property added successfully. Redirecting...
           </div>";
     echo "<script>
-            setTimeout(function() {
-                window.location.href = 'index.php?page=property_details&Property_ID={$last_id}';
-            }, 1500); // Redirect after 2 seconds
-          </script>";
+            window.location.href = 'index.php?page=property_details&Property_ID={$last_id}';
+            </script>";
     exit();
 } else {
     echo "<div style='padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; margin: 10px 0;'>
@@ -99,10 +97,26 @@ if ($stmt->execute()) {
         <label for="geo_ref_coordinates" class="form-label">Geo Reference Coordinates</label>
         <input type="text" class="form-control form-control-sm" id="geo_ref_coordinates" name="geo_ref_coordinates" required>
       </div>
-      <div class="col-md-6 mb-2">
-        <label for="property_type_id" class="form-label">Property Type</label>
-        <input type="text" class="form-control form-control-sm" id="property_type_id" name="property_type_id" required>
-      </div>
+
+     <div class="col-md-6 mb-2">
+    <label for="property_type_id" class="form-label">Property Type</label>
+    <select class="form-control form-control-sm" id="property_type_id" name="property_type_id" required>
+        <option value="">-- Select Property Type --</option>
+        <?php
+        // Fetch property types from the database
+        $query = "SELECT Property_type_ID, Property_type FROM property_types";
+        $result = $conn->query($query);
+
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo "<option value='" . htmlspecialchars($row['Property_type_ID']) . "'>" . htmlspecialchars($row['Property_type']) . "</option>";
+            }
+        } else {
+            echo "<option value=''>No property types found</option>";
+        }
+        ?>
+    </select>
+    </div>
 
       <div class="col-md-6 mb-2">
         <label for="rca" class="form-label">RCA</label>
