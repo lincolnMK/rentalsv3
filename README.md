@@ -16,12 +16,20 @@ http://localhost/rentalsv3/index.php
 
 admin user:  superadmin
 admin pass:  amtheone
-
+to create a user: 
+1. login as admin
+2. create user under users/adduser
+3. set usernames, names, password and save the user 
+4. got to the user details
+5. authorizations tab
+6. modify persmisions and save
+7. test to login the user using the created user name.
 
 
 Adding a module 
 1. Modify the index file to create a page route /index.php
 2. Modify the permissions array /index.php   eg  view_maientance =>['module' => 'Maintenance', 'action' => 'can_view']
-3. Modify the sidebar at /assets/templates/sidebar.php
+3. add links to the sidebar at /assets/templates/sidebar.php
 4. add the module in the module db table  : INSERT INTO module (module_name) VALUES ('modulename');
+5. create yours pages + php logic and place them in /pages
 
