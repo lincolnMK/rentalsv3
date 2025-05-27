@@ -25,11 +25,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
 if ($stmt->execute()) {
     $last_id = $conn->insert_id;
+ 
+   
     echo "<div style='padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin: 10px 0;'>
             New property added successfully. Redirecting...
           </div>";
     echo "<script>
-            window.location.href = 'index.php?page=property_details&Property_ID={$last_id}';
+            setTimeout(function() {
+                window.location.href = 'index.php?page=property_details&Property_ID={$last_id}';
+            }, 2000); 
+            
             </script>";
     exit();
 } else {
