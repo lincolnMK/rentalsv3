@@ -17,6 +17,7 @@ $user_id = $_SESSION['user_id'];
 
 $username = $_SESSION['username'];
 $profile_picture = $_SESSION['profile_picture'] ?? BASE_URL . '/assets/images/default_avatar.png';
+$full_name = $_SESSION['full_name'] ?? 'User';
 ?>
 
 <!DOCTYPE html>

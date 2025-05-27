@@ -8,7 +8,7 @@
         <!-- User Dropdown -->
         <div class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="d-none d-lg-inline text-white small text-truncate"><?= htmlspecialchars($username); ?></span>
+                <span class="d-none d-lg-inline text-white small text-truncate"><?= htmlspecialchars($full_name); ?></span>
                 <?php
                     if (!empty($profile_picture)) {
                         echo '<img class="img-profile rounded-circle img-fluid ms-2" src="' . htmlspecialchars($profile_picture) . '" alt="User Profile" style="width: 30px; height: 30px;">';

@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['Username']);
     $password = trim($_POST['Password']);
 
-    $query = "SELECT User_ID, User_role_ID, User_type_ID, Username, Password, Profile_picture FROM Users WHERE Username = ?";
+    $query = "SELECT User_ID, User_role_ID, User_type_ID, Username, Password, Profile_picture, First_name, Last_name FROM Users WHERE Username = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s', $username);
     $stmt->execute();
@@ -44,6 +44,8 @@ if ($result->num_rows === 1) {
         $_SESSION['user_type_id'] = $user['User_type_ID'];
         $_SESSION['username'] = $user['Username'];
         $_SESSION['profile_picture'] = $user['Profile_picture'];
+       $_SESSION['full_name'] = $user['First_name'] . ' ' . $user['Last_name'];
+
 
         log_login_attempt($conn, $username, 'success'); // ✅ Log successful login
         header("Location: index.php?page=home");
