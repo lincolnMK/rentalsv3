@@ -151,6 +151,11 @@ switch ($page) {
         $page_title = 'Reports';
         $page_file = 'view_reports.php';
         break;
+        
+    case 'rental_analysis':
+        $page_title = 'Rental Analysis';
+        $page_file = 'rental_analysis.php';
+        break;
     
         case 'payments':
         $page_title = 'View Payments';

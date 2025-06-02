@@ -1,20 +1,6 @@
 
 <?php
-session_start();
-include('db_connection.php');
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-$username = $_SESSION['username'];
-$profile_picture = $_SESSION['profile_picture'] ?? 'assets/images/default_avatar.png';
-
-// Database connection check
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include_once __DIR__ . '/../auth_check.php';
 
 // Capture search, sort, and order parameters
 $search = $_GET['search'] ?? '';
@@ -57,10 +43,14 @@ $row = $result->fetch_assoc();
 $total_results = $row['total'];
 $stmt->close();
 
-// Pagination setup
+
+// Pagination Setup
 $limit = 50;
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$start = ($page - 1) * $limit;
+$pages = isset($_GET['pages']) && is_numeric($_GET['pages']) && $_GET['pages'] > 0 ? (int)$_GET['pages'] : 1;
+$start = ($pages - 1) * $limit;
+if ($start < 0) {
+    $start = 0;
+}
 
 // Main query with sorting
 $sql = "SELECT 
@@ -110,60 +100,6 @@ $total_pages = ceil($total_results / $limit);
 ?>
 
 
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Properties</title>
-
-     <!-- Load Bootstrap from CDN -->
-     <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-
-
-
-    
-</head>
-<body>
-<div class="container-fluid">
-   <!-- Top Bar -->
-<?php
-include ('assets/templates/topbar.php'); 
-?>
-    <!-- Sidebar and Main Content Wrapper -->
-    <div class="row">
-        <!-- Sidebar -->
-        <nav id="sidebar" class="col-md-2 bg-light vh-100 d-md-block sidebar">
-            <div class="d-flex flex-column align-items-start py-3">
-            <img src="assets/images/logo.png" alt="System Logo" class="img-fluid mb-3" style="max-width: 100px;">
-                
-            <h3 class="ms-3">Rental System</h3>
-                <ul class="nav flex-column w-100 mt-4">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="homepage.php">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="view_reports.php">
-                            <i class="fas fa-money-bill-wave"></i> Reports
-                        </a>
-                    </li>
-                    <!-- Add other nav items as needed -->
-                </ul>
-            </div>
-        </nav>
-
-
-                          <!-- Main Content Area -->
-        <main class="col-md-10 bg-light">
                         <!-- Topbar (Inside Main Content) -->
             <div class="row bg-white py-3 shadow-sm">
                 <div class="col">
@@ -180,9 +116,11 @@ include ('assets/templates/topbar.php');
                                     <!-- Search Form -->
                                     <form method="GET" action="" class="mb-3 d-flex align-items-center">
     <div class="input-group me-3">
+        <input type="hidden" name="page" value="rental_analysis">
+
         <input type="text" name="search" class="form-control" placeholder="Search by Landlord, Plot Number, Occupant, District, or Location" value="<?= htmlspecialchars($search) ?>">
         <button class="btn btn-primary" type="submit">Search</button>
-        <a href="rental_analysis.php" class="btn btn-secondary">Clear</a>
+        <a href="index.php?page=rental_analysis" class="btn btn-secondary">Clear</a>
     </div>
 
     <div class="dropdown ms-3">
@@ -207,6 +145,7 @@ include ('assets/templates/topbar.php');
 <table class="table table-bordered">
 <thead class="table-dark">
     <tr>
+         <th><input type="checkbox" id="selectAll"></th> <!-- Master checkbox -->
         <?php
         $columns = [
             'Plot_number' => 'PLot#',
@@ -244,7 +183,7 @@ include ('assets/templates/topbar.php');
             ]);
 
             echo "<th>
-                    <a href='?$queryParams' class='text-white text-decoration-none'>
+                    <a href='index.php?page=rental_analysis&?$queryParams' class='text-white text-decoration-none'>
                         $label <i class='$icon'></i>
                     </a>
                   </th>";
@@ -257,6 +196,9 @@ include ('assets/templates/topbar.php');
     <tbody>
         <?php foreach ($properties as $property): ?>
             <tr>
+                <td>
+                        <input type="checkbox" class="row-checkbox" value="<?= htmlspecialchars(json_encode($property)); ?>">
+                </td>
                 <td><?= htmlspecialchars($property['Plot_number'] ?? ''); ?></td>
                 <td><?= htmlspecialchars($property['Landlord'] ?? ''); ?></td>
                 <td><?= htmlspecialchars($property['District'] ?? ''); ?></td>
@@ -264,6 +206,7 @@ include ('assets/templates/topbar.php');
                 <td><?= htmlspecialchars($property['Description'] ?? ''); ?></td>
                 <td><?= htmlspecialchars($property['Used_for'] ?? ''); ?></td>
                 <td><?= htmlspecialchars($property['RCA'] ?? ''); ?></td>
+                
                 <td><?= htmlspecialchars($property['Monthly_rent'] ?? ''); ?></td>
                 <td><?= htmlspecialchars($property['Lease_start'] ?? ''); ?></td>
                 <td><?= htmlspecialchars($property['rent_squaremeter'] ?? ''); ?></td>
@@ -274,28 +217,28 @@ include ('assets/templates/topbar.php');
 
 
                 <!-- Pagination -->
-                <!-- Pagination Links -->
-<nav>
+                 <nav>
     <ul class="pagination">
-        <?php if ($page > 1): ?>
+        <?php if ($pages > 1): ?>
             <li class="page-item">
-                <a class="page-link" href="?page=<?= $page - 1; ?>&sort=<?= urlencode($sort); ?>&order=<?= urlencode($order); ?>">Previous</a>
+                <a class="page-link" href="index.php?page=rental_analysis&pages=<?= $pages - 1 ?>&search=<?= urlencode($search) ?>">Previous</a>
             </li>
         <?php endif; ?>
 
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <li class="page-item <?= ($i === $page) ? 'active' : ''; ?>">
-                <a class="page-link" href="?page=<?= $i; ?>&sort=<?= urlencode($sort); ?>&order=<?= urlencode($order); ?>"><?= $i; ?></a>
+            <li class="page-item <?= ($i == $pages) ? 'active' : '' ?>">
+                <a class="page-link" href="index.php?page=rental_analysis&pages=<?= $i ?>&search=<?= urlencode($search) ?>"><?= $i ?></a>
             </li>
         <?php endfor; ?>
 
-        <?php if ($page < $total_pages): ?>
+        <?php if ($pages < $total_pages): ?>
             <li class="page-item">
-                <a class="page-link" href="?page=<?= $page + 1; ?>&sort=<?= urlencode($sort); ?>&order=<?= urlencode($order); ?>">Next</a>
+                <a class="page-link" href="index.php?page=rental_analysis&pages=<?= $pages + 1 ?>&search=<?= urlencode($search) ?>">Next</a>
             </li>
         <?php endif; ?>
     </ul>
 </nav>
+
 
 
 
@@ -304,13 +247,65 @@ include ('assets/templates/topbar.php');
     </div>
 </div>
 
-        </main>
+   <script>
+function getSelectedData() {
+    const selected = document.querySelectorAll('.row-checkbox:checked');
+    const data = [];
 
-                </div>
+    selected.forEach(checkbox => {
+        data.push(JSON.parse(checkbox.value));
+    });
 
+    return data;
+}
 
-</body>
-<?php
-include ('assets/templates/footer.php'); 
-?>
-</html>
+function exportToExcel() {
+    const selectedData = getSelectedData();
+    if (selectedData.length === 0) {
+        alert("Please select at least one row to export.");
+        return;
+    }
+
+    // Generate CSV
+    let csv = '';
+    const headers = Object.keys(selectedData[0]);
+    csv += headers.join(',') + '\n';
+
+    selectedData.forEach(row => {
+        csv += headers.map(h => `"${(row[h] ?? '').toString().replace(/"/g, '""')}"`).join(',') + '\n';
+    });
+
+    // Download as CSV file
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "selected_properties.csv";
+    link.click();
+}
+
+function exportToPDF() {
+    const selectedData = getSelectedData();
+    if (selectedData.length === 0) {
+        alert("Please select at least one row to export.");
+        return;
+    }
+
+    const doc = new jsPDF();
+    const headers = Object.keys(selectedData[0]);
+
+    const rows = selectedData.map(row => headers.map(h => row[h] ?? ''));
+
+    doc.autoTable({
+        head: [headers],
+        body: rows
+    });
+
+    doc.save("selected_properties.pdf");
+}
+
+// Select/Deselect all checkboxes
+document.getElementById('selectAll').addEventListener('change', function () {
+    const checkboxes = document.querySelectorAll('.row-checkbox');
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
+</script>

@@ -26,7 +26,7 @@ include_once __DIR__ . '/../auth_check.php';
                        
                       
                         <li class="nav-item">
-                            <a class="nav-link" href="rental_analysis.php" target="_blank">
+                            <a class="nav-link" href="index.php?page=rental_analysis">
                                 <i class=""></i> >Rental_analysis
                             </a>
                         </li>

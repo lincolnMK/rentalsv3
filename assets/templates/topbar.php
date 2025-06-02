@@ -1,4 +1,10 @@
 <!-- Top Bar -->
+ <?php if (!$full_name) {
+    $full_name = "Guest";
+} else {
+    $full_name = htmlspecialchars($full_name);
+}
+?>
 <div class="row bg-dark text-white py-2 align-items-center flex-nowrap" style="height: 60px;">
     <div class="col d-flex align-items-center" style="min-width: 200px;">
         <img src="assets/images/logo.png" alt="System Logo" class="img-fluid me-2" style="height: 45px;">

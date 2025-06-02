@@ -29,6 +29,11 @@ $full_name = $_SESSION['full_name'] ?? 'User';
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- jsPDF and AutoTable for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
 </head>
 <body>
     <div class="main-container container-fluid" style="max-width: 1440px; margin: 0 auto;">
