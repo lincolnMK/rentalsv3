@@ -74,9 +74,6 @@ if (isset($_POST['export_excel'])) {
     exit;
 }
 
-// Main page logic
-$username = $_SESSION['username'];
-$profile_picture = $_SESSION['profile_picture'] ?? 'assets/images/default_avatar.png';
 
 $search = $_GET['search'] ?? '';
 
@@ -178,9 +175,7 @@ $total_pages = ceil($total_results / $limit);
 <body>
 <div class="container-fluid">
     <!-- Top Bar -->
-<?php
-include('assets/templates/topbar.php');
-?>
+
 <main class="col-md-12 bg-light">
 
 <h2>Properties registered as at: <?= date('F j, Y') ?></h2>
