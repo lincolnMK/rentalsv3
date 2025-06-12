@@ -3,7 +3,7 @@
 
 
 include_once 'config.php';       // Defines BASE_URL
-include_once 'db_connection.php'; // Database connection
+//include_once 'db_connection.php'; // Database connection
 
 // Redirect to login if not authenticated
 

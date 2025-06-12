@@ -40,9 +40,3 @@ function has_permission($module, $action) {
     }
     return !empty($_SESSION['permissions'][$module][$action]);
 }
-
-
-// Optional: access logged-in user's username and profile image
-$username = $_SESSION['username'] ?? '';
-$profile_picture = $_SESSION['profile_picture'] ?? BASE_URL . '/assets/images/default_avatar.png';
-?>
