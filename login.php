@@ -2,8 +2,10 @@
 
 
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-session_start();
 
 
 function log_login_attempt($conn, $username, $status) {

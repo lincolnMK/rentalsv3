@@ -1,7 +1,9 @@
 <?php
 include_once 'config.php';
 include('session_check.php'); 
-include_once 'auth_check.php';
+//include_once 'auth_check.php';
+include_once 'db_connection.php';
+define('ALLOW_PAGE_ACCESS', true);
 
 if (!isset($_SESSION['permissions'])) {
     $_SESSION['permissions'] = [];
@@ -24,6 +26,15 @@ if (!isset($_SESSION['permissions'])) {
             'can_delete' => (int)$row['can_delete'],
         ];
     }
+}
+
+
+// Reusable permission checker function
+function has_permission($module, $action) {
+    if (!isset($_SESSION['permissions'][$module])) {
+        return false;
+    }
+    return !empty($_SESSION['permissions'][$module][$action]);
 }
 
 // Get page from URL, default to 'home'
@@ -305,7 +316,7 @@ if (file_exists($path)) {
 
     if (!isset($page_permissions[$page])) {
     echo "<div class='alert alert-danger'>Access not allowed.</div>";
-    include('assets/templates/footer.php');
+    
     exit;
 }
 

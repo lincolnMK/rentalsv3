@@ -1,5 +1,8 @@
 <?php
 // Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 
 include_once 'config.php';       // Defines BASE_URL
